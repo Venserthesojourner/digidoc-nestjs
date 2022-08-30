@@ -9,7 +9,7 @@ export class antecedentesMetrorragia {
   @OneToOne(() => antecedentes, (idAntecedente) => idAntecedente.id)
   idAntedecente: antecedentes;
 
-  @Column({ name: 'presente' })
+  @Column({ name: 'presente', type: 'boolean' })
   presente: boolean;
 
   @Column({ name: 'tiempo_evolucion' })

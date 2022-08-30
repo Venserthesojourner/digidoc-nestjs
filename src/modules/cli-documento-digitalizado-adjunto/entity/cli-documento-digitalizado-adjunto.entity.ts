@@ -5,10 +5,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 import { CliDocumentoDigitalizado } from 'src/modules/cli-documento-digitalizado/entity/cli-documento-digitalizado.entity';
-import { DateTime } from 'luxon';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum estado {
   CURRENT = 'current',
@@ -107,10 +108,12 @@ export class CliDocumentoDigitalizadoAdjunto {
   fecha: Date;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: DateTime;
+  @ApiProperty({ type: 'timestamp' })
+  createdAt: Timestamp;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updateAt: DateTime;
+  @ApiProperty({ type: 'timestamp' })
+  updateAt: Timestamp;
 
   url: any;
 }
