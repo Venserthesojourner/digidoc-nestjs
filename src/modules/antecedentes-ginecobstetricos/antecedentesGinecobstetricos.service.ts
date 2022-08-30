@@ -25,23 +25,23 @@ export class AntecedentesGinecobstetricosService {
   }
   // Find one by DNI
   async findAntecedentebyDocumentoPaciente(
-    documento_paciente: number,
+    documento_paciente: string,
   ): Promise<antecedentesGinecobstetricos> {
     return await this.antecedentesGinecobstetricosRepo.findOneBy({
-      documento_paciente: documento_paciente,
+      dni_paciente: documento_paciente,
     });
   }
   // Update
   async updateAntecedenteGinecobstetrico(
-    documento_paciente: number,
+    documento_paciente: string,
     updateAntecedenteGinecobstetricoDto: QueryDeepPartialEntity<antecedentesGinecobstetricos>,
   ): Promise<antecedentesGinecobstetricos> {
     await this.antecedentesGinecobstetricosRepo.update(
-      { documento_paciente: documento_paciente },
+      { dni_paciente: documento_paciente },
       updateAntecedenteGinecobstetricoDto,
     );
     const object = await this.antecedentesGinecobstetricosRepo.findOneBy({
-      documento_paciente: documento_paciente,
+      dni_paciente: documento_paciente,
     });
     return object;
   }

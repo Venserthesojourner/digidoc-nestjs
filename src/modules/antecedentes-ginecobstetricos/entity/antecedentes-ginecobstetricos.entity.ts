@@ -1,11 +1,13 @@
 import { antecedentesPartos } from 'src/modules/antecedentes-partos/entity/partos.entity';
+import { paciente } from 'src/modules/paciente/entity/paciente.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   JoinTable,
   ManyToMany,
-  PrimaryColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 export enum habitos_toxicos_periodo {
@@ -16,8 +18,11 @@ export enum habitos_toxicos_periodo {
 
 @Entity({ name: 'pacientes_antecedentes_ginecobstetricos' })
 export class antecedentesGinecobstetricos extends BaseEntity {
-  @PrimaryColumn({ name: 'documento_paciente' })
-  documento_paciente: number;
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => paciente, (paciente) => paciente.documento)
+  dni_paciente: string;
 
   @Column({ name: 'fecha_probable_parto', nullable: false, type: 'date' })
   fecha_probable_parto: Date;

@@ -21,14 +21,14 @@ export class AntecedentesGinecobstetricosController {
     return await this.AntecedentesGinecologicosService.ObtenerListadoAntecedentesGinecobstetricos();
   }
   @Get('/:documento_paciente')
-  async getOne(@Param('documento_paciente') documento_paciente: number) {
+  async getOne(@Param('documento_paciente') documento_paciente: string) {
     return await this.AntecedentesGinecologicosService.findAntecedentebyDocumentoPaciente(
       documento_paciente,
     );
   }
   @Put(':/documento-paciente')
   async udpate(
-    @Param('documento-paciente') documento_paciente: number,
+    @Param('documento-paciente') documento_paciente: string,
     @Body() payload: CreateAntecedenteGinecobstetricoDto,
   ) {
     return await this.AntecedentesGinecologicosService.updateAntecedenteGinecobstetrico(

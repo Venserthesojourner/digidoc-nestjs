@@ -1,5 +1,11 @@
 import { paciente } from 'src/modules/paciente/entity/paciente.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum tipo_parto {
   VAGINAL = 'Partos_Vaginales',
@@ -13,8 +19,9 @@ export class antecedentesPartos {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => paciente, (paciente) => paciente.documento)
-  dniPaciente: string;
+  @OneToMany(() => paciente, (paciente) => paciente.documento)
+  @JoinColumn({ name: 'id_paciente' })
+  paciente: paciente;
 
   @Column({
     type: 'enum',

@@ -15,11 +15,12 @@ import { antecedentesVacunas } from '../antecedentes-vacunas/entity/vacunas.enti
 import { antecedentesPartos } from '../antecedentes-partos/entity/partos.entity';
 import { antecedentesSerologias } from '../antecedentes-serologias/entity/serologia.entity';
 import { antecedentes } from './entity/antecedentes.entity';
-import { AntecedentesMetrorragiaModule } from '../antecedentes_metrorragia/antecedentes-metrorragia.module';
-import { AntecedentesVacunasModule } from '../antecedentes_vacunas/vacunas.module';
+
+import { AntecedentesVacunasModule } from '../antecedentes-vacunas/vacunas.module';
 import { AntecedentesPartosModule } from '../antecedentes-partos/antecedentes-partos.module';
-import { AntecedentesSerologiaModule } from '../antecedentes_serologias/serologia.module';
-import { AntecedentesGinecobstetricosModule } from '../antecedentes_ginecobstetricos/antecedentes-ginecobstetricos.module';
+import { AntecedentesSerologiaModule } from '../antecedentes-serologias/serologia.module';
+import { AntecedentesGinecobstetricosModule } from '../antecedentes-ginecobstetricos/antecedentes-ginecobstetricos.module';
+import { AntecedentesMetrorragiaModule } from '../antecedentes-metrorragia/antecedentes-metrorragia.module';
 
 @Module({
   imports: [

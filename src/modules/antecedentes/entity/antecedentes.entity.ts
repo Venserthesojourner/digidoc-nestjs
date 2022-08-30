@@ -1,5 +1,5 @@
-import { AntecedentesSerologias } from 'src/modules/antecedentes_serologias/entity/serologia.entity';
-import { AntecedentesVacunas } from 'src/modules/antecedentes_vacunas/entity/vacunas.entity';
+import { antecedentesSerologias } from 'src/modules/antecedentes-serologias/entity/serologia.entity';
+import { antecedentesVacunas } from 'src/modules/antecedentes-vacunas/entity/vacunas.entity';
 import { paciente } from 'src/modules/paciente/entity/paciente.entity';
 
 import {
@@ -44,8 +44,7 @@ export class antecedentes extends BaseEntity {
   @OneToOne(
     () => antecedentesGinecobstetricos,
 
-    (antecedentes_ginecobstertricos) =>
-      antecedentes_ginecobstertricos.documento_paciente,
+    (antecedentes_ginecobstertricos) => antecedentes_ginecobstertricos.id,
   )
   @JoinColumn({ name: 'antecedente_ginecobstetrico_id' })
   antecedentes_ginecobstetricos: antecedentesGinecobstetricos;
@@ -55,14 +54,14 @@ export class antecedentes extends BaseEntity {
   metrorragia: antecedentesMetrorragia;
 
   @ManyToMany(
-    () => AntecedentesSerologias,
+    () => antecedentesSerologias,
     (serologias) => serologias.antecedente,
   )
   @JoinColumn({ name: 'serologias' })
-  serologia: AntecedentesSerologias[];
+  serologia: antecedentesSerologias[];
 
-  @OneToMany(() => AntecedentesVacunas, (Vacunas: { id: number }) => Vacunas.id)
-  vacunas: AntecedentesVacunas;
+  @OneToMany(() => antecedentesVacunas, (Vacunas: { id: number }) => Vacunas.id)
+  vacunas: antecedentesVacunas;
 
   @Column({ name: 'antecedentes_alergicos' })
   antecedentes_alergicos: string;

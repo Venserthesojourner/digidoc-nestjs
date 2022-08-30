@@ -14,7 +14,7 @@ export class CreateAntecedenteMetrorragiaDto {
 
   @IsBoolean()
   @ApiProperty()
-  posee: boolean;
+  presente: boolean;
 
   @IsNumber()
   @ApiProperty()
