@@ -19,7 +19,7 @@ export enum habitos_toxicos_periodo {
 @Entity({ name: 'pacientes_antecedentes_ginecobstetricos' })
 export class antecedentesGinecobstetricos extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  idPaciente: number;
 
   @ManyToOne(() => paciente, (paciente) => paciente.documento)
   dni_paciente: string;
@@ -54,6 +54,6 @@ export class antecedentesGinecobstetricos extends BaseEntity {
   alergias_declaradas: string;
 
   @ManyToMany(() => antecedentesPartos)
-  @JoinTable()
+  @JoinTable({ name: 'partos' })
   partos: antecedentesPartos[];
 }

@@ -43,8 +43,8 @@ export class antecedentes extends BaseEntity {
 
   @OneToOne(
     () => antecedentesGinecobstetricos,
-
-    (antecedentes_ginecobstertricos) => antecedentes_ginecobstertricos.id,
+    (antecedentes_ginecobstertricos) =>
+      antecedentes_ginecobstertricos.idPaciente,
   )
   @JoinColumn({ name: 'antecedente_ginecobstetrico_id' })
   antecedentes_ginecobstetricos: antecedentesGinecobstetricos;

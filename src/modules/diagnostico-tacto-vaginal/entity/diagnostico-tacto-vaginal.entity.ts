@@ -26,7 +26,7 @@ export enum dilatacion {
   DIEZCM = 10,
 }
 
-@Entity({ name: 'tacto_vaginal' })
+@Entity({ name: 'paciente_diagnostico_tacto_vaginal' })
 export class diagnosticoTactoVaginal {
   @PrimaryGeneratedColumn()
   id: number;
