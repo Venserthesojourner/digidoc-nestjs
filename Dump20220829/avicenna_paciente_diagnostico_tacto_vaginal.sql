@@ -16,33 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `pacientes_antecedentes_metrorragia`
+-- Table structure for table `paciente_diagnostico_tacto_vaginal`
 --
 
-DROP TABLE IF EXISTS `pacientes_antecedentes_metrorragia`;
+DROP TABLE IF EXISTS `paciente_diagnostico_tacto_vaginal`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pacientes_antecedentes_metrorragia` (
+CREATE TABLE `paciente_diagnostico_tacto_vaginal` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `tiempo_evolucion` int DEFAULT NULL,
-  `cantidad` int DEFAULT NULL,
-  `presente` tinyint DEFAULT NULL,
-  `dinamica_uterina` varchar(45) DEFAULT NULL,
-  `tono_uterino` varchar(45) DEFAULT NULL,
-  `auscultacion` int DEFAULT NULL,
+  `cuello_uterino` enum('Posterior','Central','Anterior') DEFAULT NULL,
+  `borramiento` enum('Formado','70','80','90','100') DEFAULT NULL,
+  `dilatacion` enum('1','2','3','4','5','6','7','8','9','10') DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pacientes_antecedentes_metrorragia`
+-- Dumping data for table `paciente_diagnostico_tacto_vaginal`
 --
 
-LOCK TABLES `pacientes_antecedentes_metrorragia` WRITE;
-/*!40000 ALTER TABLE `pacientes_antecedentes_metrorragia` DISABLE KEYS */;
-INSERT INTO `pacientes_antecedentes_metrorragia` VALUES (1,NULL,4,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `pacientes_antecedentes_metrorragia` ENABLE KEYS */;
+LOCK TABLES `paciente_diagnostico_tacto_vaginal` WRITE;
+/*!40000 ALTER TABLE `paciente_diagnostico_tacto_vaginal` DISABLE KEYS */;
+INSERT INTO `paciente_diagnostico_tacto_vaginal` VALUES (1,'Central','80','3');
+/*!40000 ALTER TABLE `paciente_diagnostico_tacto_vaginal` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-09-01 14:59:16
+-- Dump completed on 2022-09-01 14:59:17

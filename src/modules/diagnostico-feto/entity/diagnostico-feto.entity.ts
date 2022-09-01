@@ -19,7 +19,7 @@ export enum liquidoAmniotico {
   ESPESO = 'Espeso',
 }
 
-@Entity()
+@Entity('paciente_diagnostico_feto')
 export class diagnosticoFeto {
   @PrimaryGeneratedColumn()
   id: number;

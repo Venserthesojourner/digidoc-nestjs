@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsDateString, IsOptional, IsString } from 'class-validator';
+import { Timestamp } from 'typeorm';
 
 export class CreateDiagnosticoSignosVitalesDto {
   @IsBoolean()
@@ -21,4 +22,7 @@ export class CreateDiagnosticoSignosVitalesDto {
   @ApiProperty()
   @IsOptional()
   observaciones: string;
+
+  @IsDateString()
+  created_at: Timestamp;
 }

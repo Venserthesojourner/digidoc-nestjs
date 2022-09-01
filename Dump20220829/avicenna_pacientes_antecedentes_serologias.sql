@@ -16,33 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `pacientes_antecedentes_metrorragia`
+-- Table structure for table `pacientes_antecedentes_serologias`
 --
 
-DROP TABLE IF EXISTS `pacientes_antecedentes_metrorragia`;
+DROP TABLE IF EXISTS `pacientes_antecedentes_serologias`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pacientes_antecedentes_metrorragia` (
+CREATE TABLE `pacientes_antecedentes_serologias` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `tiempo_evolucion` int DEFAULT NULL,
-  `cantidad` int DEFAULT NULL,
-  `presente` tinyint DEFAULT NULL,
-  `dinamica_uterina` varchar(45) DEFAULT NULL,
-  `tono_uterino` varchar(45) DEFAULT NULL,
-  `auscultacion` int DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL,
+  `tipo_serologia` enum('HIV','Toxoplasmosis','Mal de chagas','Hepatitis B') DEFAULT NULL,
+  `estado` tinyint DEFAULT '0',
+  `antecedentes_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+  KEY `fk_pacientes_antecedentes_serologias_1_idx` (`antecedentes_id`),
+  CONSTRAINT `fk_pacientes_antecedentes_serologias_1` FOREIGN KEY (`antecedentes_id`) REFERENCES `antecedentes` (`idpaciente`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pacientes_antecedentes_metrorragia`
+-- Dumping data for table `pacientes_antecedentes_serologias`
 --
 
-LOCK TABLES `pacientes_antecedentes_metrorragia` WRITE;
-/*!40000 ALTER TABLE `pacientes_antecedentes_metrorragia` DISABLE KEYS */;
-INSERT INTO `pacientes_antecedentes_metrorragia` VALUES (1,NULL,4,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `pacientes_antecedentes_metrorragia` ENABLE KEYS */;
+LOCK TABLES `pacientes_antecedentes_serologias` WRITE;
+/*!40000 ALTER TABLE `pacientes_antecedentes_serologias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pacientes_antecedentes_serologias` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -1,19 +1,31 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity('signos_vitales')
+@Entity('pacientes_diagnostico_signos_vitales')
 export class diagnosticoSignosVitales {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'normal', default: false })
   normal: boolean;
 
-  @Column()
+  @Column({ name: 'detalle', type: 'varchar', length: 200 })
   detalle: string;
 
-  @Column()
+  @Column({ name: 'plan', type: 'varchar', length: 200 })
   plan: string;
 
-  @Column()
+  @Column({ name: 'observaciones', type: 'varchar', length: 200 })
   observaciones: string;
+
+  @CreateDateColumn({ name: 'create_time' })
+  created_at: number;
+
+  @UpdateDateColumn({ name: 'update_time' })
+  updated_at: number;
 }

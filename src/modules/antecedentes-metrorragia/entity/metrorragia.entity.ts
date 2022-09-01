@@ -1,12 +1,20 @@
 import { antecedentes } from 'src/modules/antecedentes/entity/antecedentes.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Timestamp,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('pacientes_antecedentes_metrorragia')
 export class antecedentesMetrorragia {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => antecedentes, (idAntecedente) => idAntecedente.id)
+  @ManyToOne(() => antecedentes, (idAntecedente) => idAntecedente.id)
   idAntedecente: antecedentes;
 
   @Column({ name: 'presente', type: 'boolean' })
@@ -16,7 +24,6 @@ export class antecedentesMetrorragia {
   tiempoEvolucion: number;
 
   @Column({ name: 'cantidad' })
-  // Con un select
   cantidad: number;
 
   @Column({ name: 'auscultacion' })
@@ -26,6 +33,11 @@ export class antecedentesMetrorragia {
   dinamicaUterina: string;
 
   @Column({ name: 'tono_uterino' })
-  // Con un select
   tonoUterino: string;
+
+  @CreateDateColumn({ name: 'created_time' })
+  created_at: Timestamp;
+
+  @UpdateDateColumn({ name: 'updated_time' })
+  updated_at: Timestamp;
 }

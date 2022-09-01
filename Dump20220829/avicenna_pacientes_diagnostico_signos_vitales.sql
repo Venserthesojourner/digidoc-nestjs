@@ -16,33 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `pacientes_antecedentes_metrorragia`
+-- Table structure for table `pacientes_diagnostico_signos_vitales`
 --
 
-DROP TABLE IF EXISTS `pacientes_antecedentes_metrorragia`;
+DROP TABLE IF EXISTS `pacientes_diagnostico_signos_vitales`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pacientes_antecedentes_metrorragia` (
+CREATE TABLE `pacientes_diagnostico_signos_vitales` (
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL,
+  `normal` tinyint NOT NULL DEFAULT '0',
+  `detalle` varchar(200) DEFAULT NULL,
+  `plan` varchar(200) DEFAULT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
-  `tiempo_evolucion` int DEFAULT NULL,
-  `cantidad` int DEFAULT NULL,
-  `presente` tinyint DEFAULT NULL,
-  `dinamica_uterina` varchar(45) DEFAULT NULL,
-  `tono_uterino` varchar(45) DEFAULT NULL,
-  `auscultacion` int DEFAULT NULL,
+  `observaciones` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pacientes_antecedentes_metrorragia`
+-- Dumping data for table `pacientes_diagnostico_signos_vitales`
 --
 
-LOCK TABLES `pacientes_antecedentes_metrorragia` WRITE;
-/*!40000 ALTER TABLE `pacientes_antecedentes_metrorragia` DISABLE KEYS */;
-INSERT INTO `pacientes_antecedentes_metrorragia` VALUES (1,NULL,4,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `pacientes_antecedentes_metrorragia` ENABLE KEYS */;
+LOCK TABLES `pacientes_diagnostico_signos_vitales` WRITE;
+/*!40000 ALTER TABLE `pacientes_diagnostico_signos_vitales` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pacientes_diagnostico_signos_vitales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

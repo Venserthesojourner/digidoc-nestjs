@@ -5,13 +5,15 @@ import { paciente } from 'src/modules/paciente/entity/paciente.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
-  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  Timestamp,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { antecedentesGinecobstetricos } from '../../antecedentes-ginecobstetricos/entity/antecedentes-ginecobstetricos.entity';
@@ -25,10 +27,13 @@ export enum grupoSanguineo {
 }
 
 @Entity('antecedentes')
-@Index('paciente_antecedentes', ['id', 'paciente'])
+@Index('paciente_antecedentes', ['id', 'paciente_id'])
 export class antecedentes extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'idpaciente' })
   id: number;
+
+  @Column({ name: 'descripcion' })
+  descripcion: string;
 
   @OneToOne(() => paciente, (paciente) => paciente.id)
   @JoinColumn({ name: 'paciente_id' })
@@ -49,19 +54,18 @@ export class antecedentes extends BaseEntity {
   @JoinColumn({ name: 'antecedente_ginecobstetrico_id' })
   antecedentes_ginecobstetricos: antecedentesGinecobstetricos;
 
-  @OneToOne(() => antecedentesMetrorragia, (metrorragia) => metrorragia.id)
-  @JoinColumn({ name: 'metrorragia' })
-  metrorragia: antecedentesMetrorragia;
+  @OneToMany(() => antecedentesMetrorragia, (metrorragia) => metrorragia.id)
+  @JoinColumn({ name: 'antecendentes_metrorragia_id' })
+  metrorragia: antecedentesMetrorragia[];
 
-  @ManyToMany(
+  @OneToMany(
     () => antecedentesSerologias,
     (serologias) => serologias.antecedente,
   )
-  @JoinColumn({ name: 'serologias' })
   serologia: antecedentesSerologias[];
 
   @OneToMany(() => antecedentesVacunas, (Vacunas: { id: number }) => Vacunas.id)
-  vacunas: antecedentesVacunas;
+  vacunas: antecedentesVacunas[];
 
   @Column({ name: 'antecedentes_alergicos' })
   antecedentes_alergicos: string;
@@ -69,12 +73,18 @@ export class antecedentes extends BaseEntity {
   @Column({ name: 'antecedentes_quirurgicos' })
   antecedentes_quirurgicos: string;
 
-  @Column({ name: 'antecedentes_socialess' })
+  @Column({ name: 'antecedentes_sociales' })
   antecedentes_sociales: string;
 
-  @Column({ name: 'antecedentes_alergicos' })
+  @Column({ name: 'antecedentes_obstetricos' })
   antecedentes_obstetricos: string;
 
   @Column({ name: 'antecedentes_medicacion_actual' })
   antecedentes_medicacion_actual: string;
+
+  @CreateDateColumn({ name: 'created_time' })
+  created_at: Timestamp;
+
+  @UpdateDateColumn({ name: 'updated_time' })
+  updated_at: Timestamp;
 }
