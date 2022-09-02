@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -24,8 +25,8 @@ export class diagnosticoSignosVitales {
   observaciones: string;
 
   @CreateDateColumn({ name: 'create_time' })
-  created_at: number;
+  created_at: Timestamp;
 
   @UpdateDateColumn({ name: 'update_time' })
-  updated_at: number;
+  updated_at: Timestamp;
 }

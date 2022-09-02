@@ -7,7 +7,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   OneToMany,
   OneToOne,
@@ -27,7 +26,6 @@ export enum grupoSanguineo {
 }
 
 @Entity('antecedentes')
-@Index('paciente_antecedentes', ['id', 'paciente_id'])
 export class antecedentes extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'idpaciente' })
   id: number;
@@ -64,7 +62,7 @@ export class antecedentes extends BaseEntity {
   )
   serologia: antecedentesSerologias[];
 
-  @OneToMany(() => antecedentesVacunas, (Vacunas: { id: number }) => Vacunas.id)
+  @OneToMany(() => antecedentesVacunas, (Vacunas) => Vacunas.id)
   vacunas: antecedentesVacunas[];
 
   @Column({ name: 'antecedentes_alergicos' })
@@ -82,9 +80,9 @@ export class antecedentes extends BaseEntity {
   @Column({ name: 'antecedentes_medicacion_actual' })
   antecedentes_medicacion_actual: string;
 
-  @CreateDateColumn({ name: 'created_time' })
+  /*@CreateDateColumn({ name: 'created_time' })
   created_at: Timestamp;
 
   @UpdateDateColumn({ name: 'updated_time' })
-  updated_at: Timestamp;
+  updated_at: Timestamp;*/
 }

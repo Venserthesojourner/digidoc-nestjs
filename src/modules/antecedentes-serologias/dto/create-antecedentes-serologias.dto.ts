@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsEnum, ValidateNested } from 'class-validator';
 import { antecedentes } from 'src/modules/antecedentes/entity/antecedentes.entity';
+import { Timestamp } from 'typeorm';
 import { tipo_serologia } from '../entity/serologia.entity';
 
 export class CreateAntecedentesSerologiasDto {
@@ -18,5 +19,8 @@ export class CreateAntecedentesSerologiasDto {
 
   @Type(() => antecedentes)
   @ValidateNested()
-  antecedente: antecedentes[];
+  antecedente: antecedentes;
+
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }

@@ -23,6 +23,7 @@ export class CreateDiagnosticoSignosVitalesDto {
   @IsOptional()
   observaciones: string;
 
-  @IsDateString()
   created_at: Timestamp;
+
+  updated_at: Timestamp;
 }

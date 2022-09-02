@@ -10,7 +10,7 @@ export class AntecedentesSerologiaService {
   constructor(
     @InjectRepository(antecedentesSerologias)
     private readonly serologiaService: Repository<antecedentesSerologias>,
-  ) {}
+  ) { }
 
   async insertAntecedentesSerologia(
     antecedenteSerologia: CreateAntecedentesSerologiasDto,
