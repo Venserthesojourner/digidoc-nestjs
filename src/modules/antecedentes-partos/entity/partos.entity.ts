@@ -8,7 +8,7 @@ export enum tipo_parto {
   ECTOPICOS = 'Embarazos Ectopicos',
 }
 
-@Entity({ name: 'partos' })
+@Entity({ name: 'pacientes_antecedentes_partos' })
 export class antecedentesPartos {
   @PrimaryGeneratedColumn()
   id: number;

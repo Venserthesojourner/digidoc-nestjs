@@ -57,7 +57,7 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     @Inject('CLI_DOCUMENTO_DIGITALIZADO_ADJUNTO_REPOSITORY')
     private cliDocDigiAdjRepository: Repository<CliDocumentoDigitalizadoAdjunto>,
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
   async create(
     createCliDocumentoDigitalizadoAdjuntoDto: CreateCliDocumentoDigitalizadoAdjuntoDto,
   ) {
@@ -149,6 +149,7 @@ export class CliDocumentoDigitalizadoAdjuntoService {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async saveToFhir(): Promise<Bundle> {
+    //TODO: Agregar funcion para migrar con diferentes paramentros y un la generacion de un archivo de Log de las migraciones ejecutadas.
     const dateTo = dateNow();
     const dateFrom = last24Hours(dateTo);
     const dataStream = await this.cliDocDigiAdjRepository.find({
@@ -202,7 +203,7 @@ export class CliDocumentoDigitalizadoAdjuntoService {
           language: 'es-AR',
           url: element.url,
           size: element.bytes,
-          creation: element.fecha /*Arreglar bien aca*/,
+          creation: element.createdAt /*Arreglar bien aca*/,
           data: element.sha1,
         },
       },

@@ -37,8 +37,8 @@ export class antecedentesGinecobstetricos extends BaseEntity {
   })
   habitos_toxicos_periodo: habitos_toxicos_periodo;
 
-  @Column({
-    name: 'has_alergies',
+  /* @Column({
+    name: 'tiene_alergias',
     nullable: false,
     type: 'boolean',
     default: false,
@@ -46,12 +46,12 @@ export class antecedentesGinecobstetricos extends BaseEntity {
   tiene_alergias: boolean;
 
   @Column({
-    name: 'declared_alergies',
+    name: 'alergias_declaradas',
     nullable: true,
     type: 'varchar',
     length: 200,
   })
-  alergias_declaradas: string;
+  alergias_declaradas: string; */
 
   @ManyToMany(() => antecedentesPartos)
   @JoinTable({ name: 'partos' })

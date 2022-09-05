@@ -5,11 +5,10 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 import { CliDocumentoDigitalizado } from 'src/modules/cli-documento-digitalizado/entity/cli-documento-digitalizado.entity';
-import { dateNow } from 'src/utils/date.util';
+
 import { TimestampProvider } from 'rxjs';
 
 export enum estado {
@@ -105,8 +104,8 @@ export class CliDocumentoDigitalizadoAdjunto {
   })
   sha1: string;
 
-  @Column({ name: 'fecha', nullable: false, type: 'datetime' })
-  fecha: Date;
+  /* @Column({ name: 'fecha', nullable: false, type: 'datetime' })
+  fecha: Date; */
 
   @CreateDateColumn({
     name: 'created_at',

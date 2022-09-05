@@ -1,8 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
+///import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+//import { paciente } from '../paciente/entity/paciente.entity';
 import { CreateAntecedenteDto } from './dto/create-antecedente.dto';
 import { UpdateAntecedenteDto } from './dto/update-antecedente.dto';
 import { antecedentes } from './entity/antecedentes.entity';
+
+/* @InjectRepository(paciente)
+   private pacienteRepository: Repository<paciente>, */
 
 @Injectable()
 export class AntecedentesService {
@@ -27,6 +32,12 @@ export class AntecedentesService {
     const antecedenteBuscado = await this.AntecedenteRepository.findOneBy({
       id,
     });
+    /* if (antecedenteBuscado.paciente !== null) {
+      const pacienteFind = this.pacienteRepository.findOneBy({
+        id: antecedenteBuscado.paciente,
+      });
+      antecedenteBuscado.paciente = CreatePacienteDto.pacienteFind;
+    } */
     return antecedenteBuscado;
   }
 

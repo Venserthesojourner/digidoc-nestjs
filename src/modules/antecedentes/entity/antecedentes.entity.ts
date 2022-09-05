@@ -47,7 +47,7 @@ export class antecedentes extends BaseEntity {
       antecedentes_ginecobstertricos.idPaciente,
   )
   @JoinColumn({ name: 'antecedente_ginecobstetrico_id' })
-  antecedentes_ginecobstetricos: antecedentesGinecobstetricos;
+  antecedentes_ginecobstetricos_id: antecedentesGinecobstetricos;
 
   @OneToMany(() => antecedentesMetrorragia, (metrorragia) => metrorragia.id)
   @JoinColumn({ name: 'antecendentes_metrorragia_id' })

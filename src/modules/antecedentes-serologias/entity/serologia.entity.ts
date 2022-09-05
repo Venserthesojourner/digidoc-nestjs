@@ -15,7 +15,7 @@ export enum tipo_serologia {
   HBV = 'Hepatitis B',
 }
 
-@Entity('serologias')
+@Entity('pacientes_antecedentes_serologias')
 export class antecedentesSerologias extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,7 +25,7 @@ export class antecedentesSerologias extends BaseEntity {
     enum: tipo_serologia,
     type: 'enum',
   })
-  tipoSerologia: tipo_serologia;
+  tipo_serologia: tipo_serologia;
 
   @Column({ name: 'estado', default: false })
   estado: boolean;
