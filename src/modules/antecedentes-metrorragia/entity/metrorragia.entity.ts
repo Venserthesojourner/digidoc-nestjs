@@ -1,13 +1,5 @@
 import { antecedentes } from 'src/modules/antecedentes/entity/antecedentes.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Timestamp,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('pacientes_antecedentes_metrorragia')
 export class antecedentesMetrorragia {
@@ -34,10 +26,4 @@ export class antecedentesMetrorragia {
 
   @Column({ name: 'tono_uterino' })
   tonoUterino: string;
-
-  @CreateDateColumn({ name: 'created_time' })
-  created_at: Timestamp;
-
-  @UpdateDateColumn({ name: 'updated_time' })
-  updated_at: Timestamp;
 }

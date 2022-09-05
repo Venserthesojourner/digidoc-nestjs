@@ -1,11 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  Timestamp,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('pacientes_diagnostico_signos_vitales')
 export class diagnosticoSignosVitales {
@@ -23,10 +16,4 @@ export class diagnosticoSignosVitales {
 
   @Column({ name: 'observaciones', type: 'varchar', length: 200 })
   observaciones: string;
-
-  @CreateDateColumn({ name: 'create_time' })
-  created_at: Timestamp;
-
-  @UpdateDateColumn({ name: 'update_time' })
-  updated_at: Timestamp;
 }

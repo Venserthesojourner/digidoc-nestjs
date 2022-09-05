@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { DatabaseModule } from 'src/database/database.module';
 import { CliDocumentoDigitalizadoService } from './cli-documento-digitalizado.service';
 import { CliDocumentoDigitalizadoController } from './cli-documento-digitalizado.controller';
@@ -13,7 +13,7 @@ import { CliDocumentoDigitalizadoAdjunto } from '../cli-documento-digitalizado-a
   imports: [
     HttpModule,
     DatabaseModule,
-    CliDocumentoDigitalizadoAdjuntoModule,
+    forwardRef(() => CliDocumentoDigitalizadoAdjuntoModule),
     TypeOrmModule.forFeature([
       CliDocumentoDigitalizado,
       CliDocumentoDigitalizadoAdjunto,

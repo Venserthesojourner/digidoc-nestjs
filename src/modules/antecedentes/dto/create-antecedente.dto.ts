@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, ValidateNested } from 'class-validator';
 import { antecedentesGinecobstetricos } from 'src/modules/antecedentes-ginecobstetricos/entity/antecedentes-ginecobstetricos.entity';
@@ -36,6 +37,4 @@ export class CreateAntecedenteDto {
   antecedentes_sociales: string;
   antecedentes_obstetricos: string;
   antecedentes_medicacion_actual: string;
-  /*created_at: Timestamp;
-  updated_at: Timestamp;*/
 }

@@ -9,7 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CliDocumentoDigitalizado } from 'src/modules/cli-documento-digitalizado/entity/cli-documento-digitalizado.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { dateNow } from 'src/utils/date.util';
+import { TimestampProvider } from 'rxjs';
 
 export enum estado {
   CURRENT = 'current',
@@ -107,13 +108,14 @@ export class CliDocumentoDigitalizadoAdjunto {
   @Column({ name: 'fecha', nullable: false, type: 'datetime' })
   fecha: Date;
 
-  @CreateDateColumn({ name: 'created_at' })
-  @ApiProperty({ type: 'timestamp' })
-  createdAt: Timestamp;
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+  })
+  createdAt: TimestampProvider;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  @ApiProperty({ type: 'timestamp' })
-  updateAt: Timestamp;
+  updateAt: Date;
 
   url: any;
 }

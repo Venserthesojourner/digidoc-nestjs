@@ -29,7 +29,7 @@ export class CreateCliDocumentoDigitalizadoDto {
   categoria?: string;
 
   @IsNumber()
-  @ApiProperty()
+  @ApiProperty({ type: () => paciente })
   cliPaciente: paciente;
 
   @IsNumber()

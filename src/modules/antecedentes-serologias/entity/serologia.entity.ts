@@ -2,13 +2,10 @@ import { antecedentes } from 'src/modules/antecedentes/entity/antecedentes.entit
 import {
   BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
-  UpdateDateColumn,
 } from 'typeorm';
 
 export enum tipo_serologia {
@@ -37,10 +34,4 @@ export class antecedentesSerologias extends BaseEntity {
   @ManyToOne(() => antecedentes, (antecedentes) => antecedentes.serologia)
   @JoinColumn({ name: 'antecedentes_id' })
   antecedente: antecedentes;
-
-  @CreateDateColumn({ name: 'created_time' })
-  created_at: Timestamp;
-
-  @UpdateDateColumn({ name: 'updated_time' })
-  updated_at: Timestamp;
 }

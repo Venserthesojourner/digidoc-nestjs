@@ -5,14 +5,11 @@ import { paciente } from 'src/modules/paciente/entity/paciente.entity';
 import {
   BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
-  UpdateDateColumn,
 } from 'typeorm';
 
 import { antecedentesGinecobstetricos } from '../../antecedentes-ginecobstetricos/entity/antecedentes-ginecobstetricos.entity';
@@ -79,10 +76,4 @@ export class antecedentes extends BaseEntity {
 
   @Column({ name: 'antecedentes_medicacion_actual' })
   antecedentes_medicacion_actual: string;
-
-  /*@CreateDateColumn({ name: 'created_time' })
-  created_at: Timestamp;
-
-  @UpdateDateColumn({ name: 'updated_time' })
-  updated_at: Timestamp;*/
 }

@@ -8,12 +8,15 @@ import {
   ParseIntPipe,
   Put,
   Query,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 
 import { dateNow, nameFolderDate } from 'src/utils/date.util';
 import { CliDocumentoDigitalizadoAdjuntoService } from '../cli-documento-digitalizado-adjunto/cli-documento-digitalizado-adjunto.service';
 import { CreateCliDocumentoDigitalizadoAdjuntoDto } from '../cli-documento-digitalizado-adjunto/dto/create-cli-documento-digitalizado-adjunto.dto';
 import { UpdateCliDocumentoDigitalizadoAdjuntoDto } from '../cli-documento-digitalizado-adjunto/dto/update-cli-documento-digitalizado-adjunto.dto';
+import { CliDocumentoDigitalizadoAdjunto } from '../cli-documento-digitalizado-adjunto/entity/cli-documento-digitalizado-adjunto.entity';
 
 import { CliDocumentoDigitalizadoService } from './cli-documento-digitalizado.service';
 import { CreateCliDocumentoDigitalizadoDto } from './dto/create-cli-documento-digitalizado.dto';
@@ -34,6 +37,7 @@ interface fileMulter {
 export class CliDocumentoDigitalizadoController {
   constructor(
     private readonly cliDocumentoDigitalizadoService: CliDocumentoDigitalizadoService,
+    //@Inject(forwardRef(() => CliDocumentoDigitalizadoAdjunto))
     private readonly cliDocumentoDigitalizadoAdjuntoService: CliDocumentoDigitalizadoAdjuntoService,
   ) {}
 

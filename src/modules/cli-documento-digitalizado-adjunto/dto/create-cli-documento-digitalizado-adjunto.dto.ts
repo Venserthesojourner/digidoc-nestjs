@@ -3,8 +3,8 @@ import { IsDate, IsNumber, IsString, IsOptional } from 'class-validator';
 import { CliDocumentoDigitalizado } from 'src/modules/cli-documento-digitalizado/entity/cli-documento-digitalizado.entity';
 
 export class CreateCliDocumentoDigitalizadoAdjuntoDto {
-  @IsNumber()
-  @ApiProperty()
+  //@IsNumber()
+  @ApiProperty({ type: () => CliDocumentoDigitalizado })
   cliDocumentoDigitalizado: CliDocumentoDigitalizado;
 
   @IsString()
