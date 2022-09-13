@@ -12,17 +12,33 @@ import { UpdateEpisodioDto } from './dto/update-episodio-dto';
 import { episodio } from './entity/episodio.entity';
 import { episodioService } from './episodio.service';
 
+@Controller('episodio')
+export class episodioNoPatientController {
+  constructor(private readonly episodioServ: episodioService) {
+    //
+  }
+  @Get()
+  async getAll() {
+    return await this.episodioServ.getAllEpisodios();
+  }
+}
+
 @Controller('paciente/:id/episodio')
 export class episodioController {
-  constructor(private readonly episodioServ: episodioService) {}
+  constructor(private readonly episodioServ: episodioService) {
+    //
+  }
 
   @Post()
-  async insert(@Body() nuevoEpisodio: CreateEpisodioDto): Promise<episodio> {
-    return await this.episodioServ.addEpisodio(nuevoEpisodio);
+  async insert(
+    @Param('id', ParseIntPipe) pacienteId: number,
+    @Body() nuevoEpisodio: CreateEpisodioDto,
+  ): Promise<episodio> {
+    return await this.episodioServ.addEpisodio(nuevoEpisodio, pacienteId);
   }
   @Get()
   async getAll(@Param('id', ParseIntPipe) pacienteId: number) {
-    return await this.episodioServ.getAllEpisodios(pacienteId);
+    return await this.episodioServ.getAllEpisodiosofOnePatient(pacienteId);
   }
   @Get('/:id')
   async getOne(@Param('id') id: number) {

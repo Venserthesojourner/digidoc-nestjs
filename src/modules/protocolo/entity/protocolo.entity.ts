@@ -1,4 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  TableInheritance,
+} from 'typeorm';
 
 @Entity('protocolo')
 @TableInheritance({ column: { type: 'varchar', name: 'nombre_protocolo' } })
@@ -7,4 +12,8 @@ export abstract class protocolo {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  //En realidad este no va por que la tabla nunca se referencia por si sola
+  @Column({ name: 'nombre_protocolo' })
+  nombreProtocolo: string;
 }

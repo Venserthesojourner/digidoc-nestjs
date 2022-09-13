@@ -1,1 +1,8 @@
 Unknown column 'antecedentes.grupo_sanguineo' in 'field list' - CHECKED
+
+{/cli-financiador-paciente, POST}
+[Nest] 5982  - 09/13/2022, 8:58:55 AM   
+ERROR [ExceptionsHandler] Field 'idobra_social' doesn't have a default value
+
+Episodio: POST
+La tabla episodio no tiene el campo id como autoincremental.

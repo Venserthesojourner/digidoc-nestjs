@@ -5,7 +5,7 @@ export class CreatePacienteDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
-  nombre: string;
+  nombre?: string;
 
   @IsString()
   @IsOptional()

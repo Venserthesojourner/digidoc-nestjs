@@ -8,7 +8,7 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 
 export enum estado {
@@ -23,7 +23,7 @@ export enum estado {
 
 @Entity('episodios')
 export class episodio {
-  @PrimaryGeneratedColumn({ name: 'idepisodio' })
+  @PrimaryColumn({ name: 'idepisodio' })
   id: number;
 
   @OneToOne(() => paciente, (paciente) => paciente.id)

@@ -9,6 +9,8 @@ import {
   UseInterceptors,
   UploadedFile,
   Inject,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { ApiConsumes } from '@nestjs/swagger';
@@ -47,7 +49,10 @@ export class CliDocumentoDigitalizadoAdjuntoController {
   async create(
     @Body()
     createCliDocDigiAdjuntoDto: CreateCliDocumentoDigitalizadoAdjuntoDto,
+    @Param(':id', ParseIntPipe) cliDocumentoDigitalizadoId: number,
     @UploadedFile() file: Express.Multer.File,
+    @Query('idpaciente', ParseIntPipe) idPaciente?: number,
+    @Query('idepisodio', ParseIntPipe) idEpisodio?: number,
   ) {
     const payload: CreateCliDocumentoDigitalizadoAdjuntoDto = {
       cliDocumentoDigitalizado:
@@ -62,6 +67,8 @@ export class CliDocumentoDigitalizadoAdjuntoController {
 
     const response = await this.cliDocumentoDigitalizadoAdjuntoService.create(
       payload,
+      idPaciente,
+      idEpisodio,
     );
 
     const name = `${createCliDocDigiAdjuntoDto.cliDocumentoDigitalizado}-${response.id}`;

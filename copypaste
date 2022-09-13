@@ -3,65 +3,62 @@ https://orkhan.gitbook.io/typeorm/docs/select-query-builder
 https://stackoverflow.com/questions/60749439/circular-dependency-with-nestjs-swagger-4
 
 MAPPED 
-
-AppController {/}: +632ms
-AntecedentesController {/antecedentes}: +0ms
-Mapped {/antecedentes, POST} route +6ms
-Mapped {/antecedentes, GET} route +1ms
-Mapped {/antecedentes/:id, GET} route +2ms
-Mapped {/antecedentes/:id, PUT} route +2ms
-AntecedentesGinecobstetricosController {/antecedentes/ginecobstetricos}: +0ms
-Mapped {/antecedentes/ginecobstetricos, POST} route +1ms
-Mapped {/antecedentes/ginecobstetricos, GET} route +1ms
-Mapped {/antecedentes/ginecobstetricos/:documento_paciente, GET} route +1ms
-Mapped {/antecedentes/ginecobstetricos/:/documento-paciente, PUT} route +1ms
 AntecedentesPartosController {/antecedentes/partos}: +0ms
 Mapped {/antecedentes/partos, POST} route +2ms
 Mapped {/antecedentes/partos, GET} route +1ms
 Mapped {/antecedentes/partos/:id, GET} route +1ms
 Mapped {/antecedentes/partos/:id, PUT} route +1ms
+
 AntecedentesMetrorragiaController {/antecedentes/metrorragia}: +0ms
 Mapped {/antecedentes/metrorragia, POST} route +1ms
 Mapped {/antecedentes/metrorragia/:id, GET} route +1ms
 Mapped {/antecedentes/metrorragia, GET} route +1ms
 Mapped {/antecedentes/metrorragia/:id, PUT} route +1ms
+
 AntecedentesVacunasController {/antecedentes/vacunas}: +0ms
 Mapped {/antecedentes/vacunas, GET} route +1ms
 Mapped {/antecedentes/vacunas/:id, GET} route +1ms
 Mapped {/antecedentes/vacunas, POST} route +1ms
 Mapped {/antecedentes/vacunas/:id, PUT} route +1ms
 Mapped {/antecedentes/vacunas/:id, DELETE} route +1ms
+
 SerologiaController {/antecedentes/serologia}: +0ms
 Mapped {/antecedentes/serologia, GET} route +1ms
 Mapped {/antecedentes/serologia/:id, GET} route +1ms
 Mapped {/antecedentes/serologia, POST} route +1ms
 Mapped {/antecedentes/serologia/antecedentes/serologias/:id, PUT} route +1ms
+
 DiagnosticoController {/diagnostico}: +0ms
 Mapped {/diagnostico, POST} route +1ms
 Mapped {/diagnostico/:id, GET} route +0ms
 Mapped {/diagnostico, GET} route +1ms
 Mapped {/diagnostico/:id, PUT} route +2ms
+
 DiagnosticoFetoController {/diagnostico/feto}: +1ms
 Mapped {/diagnostico/feto, POST} route +1ms
 Mapped {/diagnostico/feto, GET} route +1ms
 Mapped {/diagnostico/feto/:id, GET} route +1ms
 Mapped {/diagnostico/feto/:id, PUT} route +1ms
+
 DiagnosticoSignosVitalesController {/diagnostico/signos%20vitales}: +0ms
 Mapped {/diagnostico/signos%20vitales, POST} route +1ms
 Mapped {/diagnostico/signos%20vitales, GET} route +1ms
 Mapped {/diagnostico/signos%20vitales/:id, GET} route +1ms
 Mapped {/diagnostico/signos%20vitales/:id, PUT} route +1ms
+
 DiagnosticoTactiVaginalController {/diagnostico/tacto%20vaginal}: +0ms
 Mapped {/diagnostico/tacto%20vaginal, POST} route +1ms
 Mapped {/diagnostico/tacto%20vaginal, GET} route +1ms
 Mapped {/diagnostico/tacto%20vaginal/:id, GET} route +1ms
 Mapped {/diagnostico/tacto%20vaginal/:id, PUT} route +1ms
+
 CliFinanciadorController {/cli-financiador}: +0ms
 Mapped {/cli-financiador, POST} route +1ms
 Mapped {/cli-financiador, GET} route +1ms
 Mapped {/cli-financiador/:id, GET} route +1ms
 Mapped {/cli-financiador/:id, PATCH} route +1ms
 Mapped {/cli-financiador/:id, DELETE} route +0ms
+
 CliDocumentoDigitalizadoController {/cli-documento-digitalizado}: +1ms
 Mapped {/cli-documento-digitalizado, POST} route +1ms
 Mapped {/cli-documento-digitalizado, GET} route +0ms
@@ -69,42 +66,67 @@ Mapped {/cli-documento-digitalizado/migrate/:limit, GET} route +1ms
 Mapped {/cli-documento-digitalizado/:id, GET} route +1ms
 Mapped {/cli-documento-digitalizado/:id, PUT} route +1ms
 Mapped {/cli-documento-digitalizado/:id, DELETE} route +1ms
+
 CliDocumentoDigitalizadoAdjuntoController {/cli-documento-digitalizado-adjunto}: 
 Mapped {/cli-documento-digitalizado-adjunto, POST} route +2ms
-Mapped {/cli-documento-digitalizado-adjunto, GET} route +1ms
-Mapped {/cli-documento-digitalizado-adjunto/:id, GET} route +1ms
+Mapped {/cli-documento-digitalizado-adjunto, GET} 200 OK
+Mapped {/cli-documento-digitalizado-adjunto/:id, GET} 200 OK
 Mapped {/cli-documento-digitalizado-adjunto/:id, PATCH} route +1ms
 Mapped {/cli-documento-digitalizado-adjunto/:id, DELETE} route +1ms
+
+
+/////////////////////Pasaron///////////////////////////////
+AppController {/}: +632ms
+AntecedentesController {/antecedentes}: +0ms
+Mapped {/antecedentes, POST} 200 OK
+Mapped {/antecedentes, GET} 200 OK
+Mapped {/antecedentes/:id, GET} 200 OK
+Mapped {/antecedentes/:id, PUT} 200 OK
+
+
 diagnosticoEstudiosController {/diagnostico/estudios}: +0ms
-Mapped {/diagnostico/estudios, POST} route +1ms
-Mapped {/diagnostico/estudios/:id, GET} route +1ms
-Mapped {/diagnostico/estudios, GET} route +1ms
-Mapped {/diagnostico/estudios/:id, PUT} route +0ms
-episodioController {/paciente/:id/episodio}: +1ms
-Mapped {/paciente/:id/episodio, POST} route +0ms
-Mapped {/paciente/:id/episodio, GET} route +1ms
-Mapped {/paciente/:id/episodio/:id, GET} route +1ms
-Mapped {/paciente/:id/episodio/:id, PUT} route +1ms
+Mapped {/diagnostico/estudios, POST} 200 OK
+Mapped {/diagnostico/estudios/:id, GET} 200 OK
+Mapped {/diagnostico/estudios, GET} 200 OK
+Mapped {/diagnostico/estudios/:id, PUT} 200 OK
+
+
+Mapped {/paciente/:id/episodio, POST} 200 OK
+Mapped {/paciente/:id/episodio, GET} 200 OK
+Mapped {/paciente/:id/episodio/:id, GET} 200 OK
+Mapped {/paciente/:id/episodio/:id, PUT} 200 OK
+
+PacienteController {/paciente}: +0ms
+Mapped {/paciente, POST} 200 OK
+Mapped {/paciente, GET} 200 OK
+Mapped {/paciente/:id, GET} 200 OK
+Mapped {/paciente/:id, PATCH} 200 OK 
+Mapped {/paciente/:id, DELETE} 200 OK
+
+ProtocoloController {/protocolo}: +0ms
+Mapped {/protocolo, GET} 200 OK
+Mapped {/protocolo/:id, GET} 200 OK
+Mapped {/protocolo, POST} 200 OK
+Mapped {/protocolo/:id, PUT} 200 OK
+Mapped {/protocolo/:id, DELETE} route +1ms
+
+///////////////////////////////Para mirar///////////////////////////////////////
+
+CliFinanciadorPacienteController {/cli-financiador-paciente}: +0ms
+Mapped {/cli-financiador-paciente, POST} route +1ms
+Mapped {/cli-financiador-paciente, GET} 200 OK
+Mapped {/cli-financiador-paciente/:id, GET} 200 OK
+Mapped {/cli-financiador-paciente/:id, PATCH} route +1ms
+Mapped {/cli-financiador-paciente/:id, DELETE} route +1ms
+
 protocoloMaternidadIngresoController {/protocolo/maternidad/ingreso}: +0ms
 Mapped {/protocolo/maternidad/ingreso, POST} route +1ms
 Mapped {/protocolo/maternidad/ingreso, GET} route +1ms
 Mapped {/protocolo/maternidad/ingreso/:id, GET} route +1ms
 Mapped {/protocolo/maternidad/ingreso/:id, PUT} route +1ms
-PacienteController {/paciente}: +0ms
-Mapped {/paciente, POST} route +1ms
-Mapped {/paciente, GET} route +0ms
-Mapped {/paciente/:id, GET} route +1ms
-Mapped {/paciente/:id, PATCH} route +1ms
-Mapped {/paciente/:id, DELETE} route +1ms
-ProtocoloController {/protocolo}: +0ms
-Mapped {/protocolo, GET} route +1ms
-Mapped {/protocolo/:id, GET} route +1ms
-Mapped {/protocolo, POST} route +0ms
-Mapped {/protocolo/:id, PUT} route +1ms
-Mapped {/protocolo/:id, DELETE} route +1ms
-CliFinanciadorPacienteController {/cli-financiador-paciente}: +0ms
-Mapped {/cli-financiador-paciente, POST} route +1ms
-Mapped {/cli-financiador-paciente, GET} route +1ms
-Mapped {/cli-financiador-paciente/:id, GET} route +1ms
-Mapped {/cli-financiador-paciente/:id, PATCH} route +1ms
-Mapped {/cli-financiador-paciente/:id, DELETE} route +1ms
+
+AntecedentesGinecobstetricosController {/antecedentes/ginecobstetricos}: +0ms
+Mapped {/antecedentes/ginecobstetricos, POST} route +1ms
+Mapped {/antecedentes/ginecobstetricos, GET} route +1ms
+Mapped {/antecedentes/ginecobstetricos/:documento_paciente, GET} route +1ms
+Mapped {/antecedentes/ginecobstetricos/:/documento-paciente, PUT} route +1ms

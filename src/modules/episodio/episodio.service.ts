@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 //import e from 'express';
 import { Repository } from 'typeorm';
+import { paciente } from '../paciente/entity/paciente.entity';
 import { CreateEpisodioDto } from './dto/create-episodio-dto';
 import { UpdateEpisodioDto } from './dto/update-episodio-dto';
 import { episodio } from './entity/episodio.entity';
@@ -10,11 +11,25 @@ export class episodioService {
   constructor(
     @Inject('EPISODIO_REPOSITORY')
     private readonly episodioRepo: Repository<episodio>,
-  ) {}
-  async addEpisodio(nuevoEpisodio: CreateEpisodioDto): Promise<episodio> {
+    @Inject('PACIENTE_REPOSITORY')
+    private readonly pacienteRepo: Repository<paciente>,
+  ) {
+    //
+  }
+  async addEpisodio(
+    nuevoEpisodio: CreateEpisodioDto,
+    pacienteId: number,
+  ): Promise<episodio> {
+    nuevoEpisodio.pacienteData = await this.pacienteRepo.findOne({
+      where: { id: pacienteId },
+    });
     return await this.episodioRepo.save(nuevoEpisodio);
   }
-  async getAllEpisodios(pacienteId: number): Promise<episodio[]> {
+  async getAllEpisodios(): Promise<episodio[]> {
+    return await this.episodioRepo.find({ relations: ['pacientData'] });
+  }
+
+  async getAllEpisodiosofOnePatient(pacienteId: number): Promise<episodio[]> {
     console.log(pacienteId);
     return await this.episodioRepo.find({
       where: { pacientData: { id: pacienteId } },
@@ -34,6 +49,10 @@ export class episodioService {
     await this.episodioRepo.update({ id: id }, updatedEpisodio);
     return await this.episodioRepo.findOneBy({ id: id });
   }
+  async deleteOneEpisode(id: number): Promise<void> {
+    await this.episodioRepo.delete({ id });
+  }
+
   async parseToJSON4Fhir(element: episodio): Promise<JSON> {
     const parsedFhir = {
       episodio: {
