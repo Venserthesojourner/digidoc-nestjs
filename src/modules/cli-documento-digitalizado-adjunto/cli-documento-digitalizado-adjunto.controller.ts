@@ -117,4 +117,9 @@ export class CliDocumentoDigitalizadoAdjuntoController {
   remove(@Param('id') id: string) {
     return this.cliDocumentoDigitalizadoAdjuntoService.remove(+id);
   }
+
+  @Get('/migration')
+  migration(): void {
+    this.cliDocumentoDigitalizadoAdjuntoService.saveToFhir();
+  }
 }

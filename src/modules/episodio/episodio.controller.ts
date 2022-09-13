@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateEpisodioDto } from './dto/create-episodio-dto';
 import { UpdateEpisodioDto } from './dto/update-episodio-dto';
 import { episodio } from './entity/episodio.entity';
@@ -13,8 +21,8 @@ export class episodioController {
     return await this.episodioServ.addEpisodio(nuevoEpisodio);
   }
   @Get()
-  async getAll() {
-    return await this.episodioServ.getAllEpisodios();
+  async getAll(@Param('id', ParseIntPipe) pacienteId: number) {
+    return await this.episodioServ.getAllEpisodios(pacienteId);
   }
   @Get('/:id')
   async getOne(@Param('id') id: number) {

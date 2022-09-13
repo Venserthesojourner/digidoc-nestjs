@@ -37,7 +37,11 @@ export class antecedentesGinecobstetricos extends BaseEntity {
   })
   habitos_toxicos_periodo: habitos_toxicos_periodo;
 
-  /* @Column({
+  /* Con el tema de las alergias como hay una table especifica para ello lo que deberia hacer es dejarlo 
+  de modo que cuando declare alergias las cargue en la tabla buscando los codigos en esta tabla.
+
+  
+  @Column({
     name: 'tiene_alergias',
     nullable: false,
     type: 'boolean',

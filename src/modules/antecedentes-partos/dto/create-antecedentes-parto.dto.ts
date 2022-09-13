@@ -7,7 +7,7 @@ import { tipo_parto } from '../entity/partos.entity';
 export class CreateAntecendentePartoDto {
   @Type(() => paciente)
   @ValidateNested()
-  dniPaciente: paciente;
+  pacienteId: paciente;
   @IsEnum({
     enum: tipo_parto,
   })

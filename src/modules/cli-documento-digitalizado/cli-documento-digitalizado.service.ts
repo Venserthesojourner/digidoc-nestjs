@@ -31,12 +31,17 @@ export class CliDocumentoDigitalizadoService {
   }
 
   async findAll() {
-    const result = await this.cliDocDigiRepository.find();
+    const result = await this.cliDocDigiRepository.find({
+      relations: ['cliPaciente', 'cliEpisodio'],
+    });
     return result;
   }
 
   async findOne(id: number) {
-    const result = await this.cliDocDigiRepository.findOneBy({ id });
+    const result = await this.cliDocDigiRepository.findOne({
+      where: { id: id },
+      relations: ['cliPaciente', 'cliEpisodio'],
+    });
     return result;
   }
 

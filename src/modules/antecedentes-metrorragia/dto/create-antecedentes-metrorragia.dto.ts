@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsNumber,
@@ -9,6 +10,7 @@ import {
 } from 'class-validator';
 import { antecedentes } from 'src/modules/antecedentes/entity/antecedentes.entity';
 export class CreateAntecedenteMetrorragiaDto {
+  @Type(() => antecedentes)
   @ApiProperty()
   idAntecedentes: antecedentes;
 

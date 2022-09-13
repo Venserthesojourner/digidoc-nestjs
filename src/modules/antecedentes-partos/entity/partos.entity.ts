@@ -13,7 +13,7 @@ export class antecedentesPartos {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => paciente, (paciente) => paciente.documento)
+  @ManyToOne(() => paciente, (paciente) => paciente.id)
   paciente: paciente;
 
   @Column({

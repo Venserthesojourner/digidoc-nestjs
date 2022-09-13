@@ -9,7 +9,7 @@ export class CliFinanciadorPacienteService {
   constructor(
     @Inject('CLI_FINANCIADOR_PACIENTE_REPOSITORY')
     private cliFinanciadorPaciente: Repository<CliFinanciadorPaciente>,
-  ) {}
+  ) { }
 
   async create(
     createCliFinanciadorPacienteDto: CreateCliFinanciadorPacienteDto,
@@ -21,13 +21,19 @@ export class CliFinanciadorPacienteService {
   }
 
   async findAll() {
-    const result = await this.cliFinanciadorPaciente.find();
+    const result = await this.cliFinanciadorPaciente.find({
+      relations: ['cliFinanciador', 'cliPaciente'],
+      take: 10,
+    });
     return result;
   }
 
   async findOne(id: number) {
-    const result = await this.cliFinanciadorPaciente.findOneBy({
-      id,
+    const result = await this.cliFinanciadorPaciente.findOne({
+      where: {
+        id,
+      },
+      relations: ['cliFinanciador', 'cliPaciente'],
     });
     return result;
   }
