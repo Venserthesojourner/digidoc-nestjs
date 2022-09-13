@@ -8,7 +8,7 @@ import { AntecedentesSerologiaService } from './serologia.service';
 export class SerologiaController {
   constructor(
     private readonly antecedentesSerologiaService: AntecedentesSerologiaService,
-  ) {}
+  ) { }
 
   @Get()
   getAll() {
@@ -29,7 +29,7 @@ export class SerologiaController {
     );
   }
 
-  @Put('antecedentes/serologias/:id')
+  @Put(':id')
   updateOne(
     @Param('id') id: number,
     @Body() updatedSerologia: UpdateAntecedenteSerologiaDto,

@@ -34,6 +34,8 @@ export class diagnosticoTactoVaginal {
   @Column({
     type: 'enum',
     enum: cuello,
+    name: 'cuello_uterino',
+    enumName: 'cuello_uterino',
     default: null,
   })
   cuello: cuello;

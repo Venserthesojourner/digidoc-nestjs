@@ -8,12 +8,12 @@ export enum tipo_parto {
   ECTOPICOS = 'Embarazos Ectopicos',
 }
 
-@Entity({ name: 'partos' })
+@Entity({ name: 'pacientes_antecedentes_partos' })
 export class antecedentesPartos {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => paciente, (paciente) => paciente.documento)
+  @ManyToOne(() => paciente, (paciente) => paciente.id)
   paciente: paciente;
 
   @Column({

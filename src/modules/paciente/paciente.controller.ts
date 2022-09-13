@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PacienteService } from './paciente.service';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
@@ -21,8 +22,8 @@ export class PacienteController {
   }
 
   @Get()
-  findAll() {
-    return this.pacienteService.findAll();
+  findAll(@Query('limit') limit: number, @Query('skip') skip: number) {
+    return this.pacienteService.findAll(limit, skip);
   }
 
   @Get(':id')

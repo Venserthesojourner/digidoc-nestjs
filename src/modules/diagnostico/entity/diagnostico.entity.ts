@@ -4,24 +4,24 @@ import { diagnosticoSignosVitales } from 'src/modules/diagnostico-signos-vitales
 import { diagnosticoTactoVaginal } from 'src/modules/diagnostico-tacto-vaginal/entity/diagnostico-tacto-vaginal.entity';
 import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('paciente_diagnostico')
 export class diagnostico {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => diagnosticoFeto)
-  @JoinColumn()
+  @OneToOne(() => diagnosticoFeto, (diagnosticoFeto) => diagnosticoFeto.id)
+  @JoinColumn({ name: 'diagnostico_feto_id' })
   feto: diagnosticoFeto;
 
   @OneToOne(() => diagnosticoTactoVaginal)
-  @JoinColumn()
+  @JoinColumn({ name: 'diagnostico_tacto_vaginal_id' })
   tacto_vaginal: diagnosticoTactoVaginal;
 
   @OneToOne(() => diagnosticoEstudios)
-  @JoinColumn()
+  @JoinColumn({ name: 'diagnostico_ecografia_id' })
   ecografia: diagnosticoEstudios;
 
   @OneToOne(() => diagnosticoSignosVitales)
-  @JoinColumn()
+  @JoinColumn({ name: 'diagnostico_signos_vitales_id' })
   signosVitales: diagnosticoSignosVitales;
 }

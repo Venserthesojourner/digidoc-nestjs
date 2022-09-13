@@ -37,8 +37,12 @@ export class antecedentesGinecobstetricos extends BaseEntity {
   })
   habitos_toxicos_periodo: habitos_toxicos_periodo;
 
+  /* Con el tema de las alergias como hay una table especifica para ello lo que deberia hacer es dejarlo 
+  de modo que cuando declare alergias las cargue en la tabla buscando los codigos en esta tabla.
+
+  
   @Column({
-    name: 'has_alergies',
+    name: 'tiene_alergias',
     nullable: false,
     type: 'boolean',
     default: false,
@@ -46,12 +50,12 @@ export class antecedentesGinecobstetricos extends BaseEntity {
   tiene_alergias: boolean;
 
   @Column({
-    name: 'declared_alergies',
+    name: 'alergias_declaradas',
     nullable: true,
     type: 'varchar',
     length: 200,
   })
-  alergias_declaradas: string;
+  alergias_declaradas: string; */
 
   @ManyToMany(() => antecedentesPartos)
   @JoinTable({ name: 'partos' })

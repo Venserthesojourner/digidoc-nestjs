@@ -57,7 +57,9 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     @Inject('CLI_DOCUMENTO_DIGITALIZADO_ADJUNTO_REPOSITORY')
     private cliDocDigiAdjRepository: Repository<CliDocumentoDigitalizadoAdjunto>,
     private readonly httpService: HttpService,
-  ) {}
+  ) {
+    //
+  }
   async create(
     createCliDocumentoDigitalizadoAdjuntoDto: CreateCliDocumentoDigitalizadoAdjuntoDto,
   ) {
@@ -68,12 +70,25 @@ export class CliDocumentoDigitalizadoAdjuntoService {
   }
 
   async findAll() {
-    const result = await this.cliDocDigiAdjRepository.find();
+    const result = await this.cliDocDigiAdjRepository.find({
+      relations: [
+        'cliDocumentoDigitalizado',
+        'cliDocumentoDigitalizado.cliPaciente',
+        'cliDocumentoDigitalizado.cliEpisodio',
+      ],
+    });
     return result;
   }
 
   async findOne(id: number) {
-    const result = await this.cliDocDigiAdjRepository.findOneBy({ id });
+    const result = await this.cliDocDigiAdjRepository.findOne({
+      where: { id: id },
+      relations: [
+        'cliDocumentoDigitalizado',
+        'cliDocumentoDigitalizado.cliPaciente',
+        'cliDocumentoDigitalizado.cliEpisodio',
+      ],
+    });
     return result;
   }
 
@@ -149,28 +164,43 @@ export class CliDocumentoDigitalizadoAdjuntoService {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async saveToFhir(): Promise<Bundle> {
-    const dateTo = dateNow();
-    const dateFrom = last24Hours(dateTo);
+    //TODO: Agregar funcion para migrar con diferentes paramentros y un la generacion de un archivo de Log de las migraciones ejecutadas.
+    const date = dateNow();
+    const dateTo = `${date.year}-${date.day}-${date.month} ${date.hour}:${date.minute}:${date.second}`;
+    const yesterday = last24Hours(date);
+    const dateFrom = `${yesterday.year}-${yesterday.day}-${yesterday.month} ${yesterday.hour}:${yesterday.minute}:${yesterday.second}`; //console.log(dateFrom);
+    //console.log(dateTo);
+
     const dataStream = await this.cliDocDigiAdjRepository.find({
       where: {
         createdAt: Between(dateFrom, dateTo),
       },
+      relations: [
+        'cliDocumentoDigitalizado',
+        'cliDocumentoDigitalizado.cliPaciente',
+        'cliDocumentoDigitalizado.cliEpisodio',
+      ],
     });
+    //console.log(dataStream);
+    let bundle: any;
     dataStream.forEach(async (element) => {
-      const bundledElement = this.parseToJSON4Fhir(element);
-      await Bundle.createBundle('collection', [bundledElement]);
+      console.log(element);
+      const bundledElement = await this.parseToJSON4Fhir(element);
+      //Logger.log(JSON.parse(JSON.stringify(bundledElement)));
+      Logger.log('we are moving all the data =D');
+      bundle = await Bundle.createBundle('collection', [bundledElement]);
+      console.log(bundle);
     });
-    Logger.log('we are moving all the data =D');
 
-    return this.httpService.post(
+    /* return this.httpService.post(
       '/api/v1/fhir/resource/DocumentReference/create_document_reference',
       Bundle,
-    );
+    ); */
   }
 
   async parseToJSON4Fhir(
     element: CliDocumentoDigitalizadoAdjunto,
-  ): Promise<JSON> {
+  ): Promise<any> {
     const tipo = [
       {
         // 0..1
@@ -202,7 +232,7 @@ export class CliDocumentoDigitalizadoAdjuntoService {
           language: 'es-AR',
           url: element.url,
           size: element.bytes,
-          creation: element.fecha /*Arreglar bien aca*/,
+          creation: element.createdAt /*Arreglar bien aca*/,
           data: element.sha1,
         },
       },
@@ -226,6 +256,7 @@ export class CliDocumentoDigitalizadoAdjuntoService {
         content: content,
       },
     };
-    return JSON.parse(JSON.stringify(parsedFhir));
+    return parsedFhir;
+    //JSON.parse(JSON.stringify());
   }
 }

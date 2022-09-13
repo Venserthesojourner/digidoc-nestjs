@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNumber, IsString, IsOptional } from 'class-validator';
+import { episodio } from 'src/modules/episodio/entity/episodio.entity';
 import { paciente } from 'src/modules/paciente/entity/paciente.entity';
 
 export class CreateCliDocumentoDigitalizadoDto {
@@ -30,12 +31,12 @@ export class CreateCliDocumentoDigitalizadoDto {
 
   @IsNumber()
   @ApiProperty({ type: () => paciente })
-  cliPaciente: paciente;
+  cliPaciente?: paciente;
 
   @IsNumber()
   @IsOptional()
-  @ApiProperty()
-  cliEpisodio?: number;
+  @ApiProperty({ type: () => episodio })
+  cliEpisodio?: episodio;
 
   @IsDate()
   @IsOptional()

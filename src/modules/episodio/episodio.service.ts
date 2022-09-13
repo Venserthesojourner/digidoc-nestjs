@@ -14,11 +14,18 @@ export class episodioService {
   async addEpisodio(nuevoEpisodio: CreateEpisodioDto): Promise<episodio> {
     return await this.episodioRepo.save(nuevoEpisodio);
   }
-  async getAllEpisodios(): Promise<episodio[]> {
-    return await this.episodioRepo.find();
+  async getAllEpisodios(pacienteId: number): Promise<episodio[]> {
+    console.log(pacienteId);
+    return await this.episodioRepo.find({
+      where: { pacientData: { id: pacienteId } },
+      relations: ['pacientData'],
+    });
   }
   async getOneEpisodio(id: number) {
-    return await this.episodioRepo.findOneBy({ id: id });
+    return await this.episodioRepo.findOne({
+      where: { id: id },
+      relations: ['pacientData'],
+    });
   }
   async updateOneEpisodio(
     id: number,
@@ -54,7 +61,7 @@ export class episodioService {
           ],
         },
       ],
-      tipoServicio: element.tipoServicio,
+      //tipoServicio: element.tipoServicio,
       prioridad: {
         codigos: [
           {

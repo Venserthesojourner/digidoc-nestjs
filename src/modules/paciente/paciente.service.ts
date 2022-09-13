@@ -11,15 +11,19 @@ export class PacienteService {
     @Inject('PACIENTE_REPOSITORY')
     private pacienteRepository: Repository<paciente>,
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
 
   async create(createPacienteDto: CreatePacienteDto) {
     const newObject = await this.pacienteRepository.save(createPacienteDto);
     return newObject;
   }
 
-  async findAll() {
-    const result = await this.pacienteRepository.find();
+  async findAll(take = 100, skip = 0) {
+    const result = await this.pacienteRepository.find({
+      take,
+      skip,
+      order: { id: 'ASC' },
+    });
     return result;
   }
 
@@ -34,8 +38,9 @@ export class PacienteService {
     return object;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} paciente`;
+  async remove(id: number) {
+    await this.pacienteRepository.delete({ id });
+    return 'Borrado Exitoso';
   }
 
   async parseToJSON4Fhir(element: paciente): Promise<JSON> {
@@ -53,14 +58,15 @@ export class PacienteService {
           },
         ],
         direccion: {
-          calle: element.direccion.calle,
-          codigo_postal: element.direccion.codigoPostal,
-          ciudad: element.direccion.ciudad,
-          provincia: element.direccion.provincia,
-          pais: element.direccion.pais,
+          calle: element.direccion,
+          codigo_postal: element.codigoPostal,
+          ciudad: element.localidad,
+          provincia: element.provincia,
+          pais: 'Argentina',
+          //element.pais,
         },
-        apellidos: [element.apellidos.split(',')],
-        nombres: [element.apellidos.split(',')],
+        apellidos: [element.primerApellido + element.segundoApellido],
+        nombres: [element.primerNombre + element.segundoNombre],
         telefono: element.telefonoFijo,
         email: element.email,
         celular: element.telefonoMovil,

@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { paciente } from 'src/modules/paciente/entity/paciente.entity';
 import { CliDocumentoDigitalizadoAdjunto } from 'src/modules/cli-documento-digitalizado-adjunto/entity/cli-documento-digitalizado-adjunto.entity';
+import { episodio } from 'src/modules/episodio/entity/episodio.entity';
 
 @Entity({ name: 'cli_documento_digitalizado' })
 export class CliDocumentoDigitalizado {
@@ -48,12 +49,13 @@ export class CliDocumentoDigitalizado {
   })
   categoria?: string;
 
-  @ManyToOne(() => paciente, (paciente) => paciente.cliDocumentoDigitalizado)
+  @ManyToOne(() => paciente, (paciente) => paciente.id)
   @JoinColumn({ name: 'cli_paciente_id' })
-  cliPaciente: paciente;
+  cliPaciente?: paciente;
 
-  @Column({ name: 'cli_episodio_id', nullable: true, default: null })
-  cliEpisodio?: number;
+  @ManyToOne(() => episodio, (episodio) => episodio.id)
+  @JoinColumn({ name: 'cli_episodio_id' })
+  cliEpisodio?: episodio;
 
   @Column({ name: 'baja_fecha', nullable: true, default: null })
   bajaFecha?: Date;
