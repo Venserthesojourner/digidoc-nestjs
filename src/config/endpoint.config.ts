@@ -8,5 +8,8 @@ export default registerAs('configEndpoint', () => {
     fsGetEncounter: process.env.FS_GET_ENCOUNTER,
     fsGetPatientFilter: process.env.FS_GET_PATIENT_FILTER,
     fsGetBinaryDocumentReference: process.env.FS_GET_BINARY_DOCUMENT_REFERENCE,
+    fsPostCreateDocumentReference:
+      process.env.FS_POST_CREATE_DOCUMENT_REFERENCE,
+    fsPostCreateEncounter: process.env.FS_POST_CREATE_ENCOUNTER,
   };
 });

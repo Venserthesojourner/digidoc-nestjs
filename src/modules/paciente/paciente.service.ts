@@ -11,7 +11,9 @@ export class PacienteService {
     @Inject('PACIENTE_REPOSITORY')
     private pacienteRepository: Repository<paciente>,
     private readonly httpService: HttpService,
-  ) { }
+  ) {
+    //
+  }
 
   async create(createPacienteDto: CreatePacienteDto) {
     const newObject = await this.pacienteRepository.save(createPacienteDto);

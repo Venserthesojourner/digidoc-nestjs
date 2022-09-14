@@ -30,6 +30,13 @@ import {
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { dateNow, last24Hours } from 'src/utils/date.util';
+import { episodio } from '../episodio/entity/episodio.entity';
+import { episodioService } from '../episodio/episodio.service';
+import { PacienteService } from '../paciente/paciente.service';
+import { paciente } from '../paciente/entity/paciente.entity';
+
+import { ConfigType } from '@nestjs/config';
+import configEndpoint from 'src/config/endpoint.config';
 
 interface fileMulter {
   fieldname?: string;
@@ -56,15 +63,31 @@ export class CliDocumentoDigitalizadoAdjuntoService {
   constructor(
     @Inject('CLI_DOCUMENTO_DIGITALIZADO_ADJUNTO_REPOSITORY')
     private cliDocDigiAdjRepository: Repository<CliDocumentoDigitalizadoAdjunto>,
+    @Inject('EPISODIO_REPOSITORY')
+    private episodeRepository: Repository<episodio>,
+    @Inject('PACIENTE_REPOSITORY')
+    private pacienteRepository: Repository<paciente>,
+    @Inject(configEndpoint.KEY)
+    private configEnd: ConfigType<typeof configEndpoint>,
     private readonly httpService: HttpService,
+    private readonly episodeService: episodioService,
+    private readonly pacienteService: PacienteService,
   ) {
     //
   }
   async create(
     createCliDocumentoDigitalizadoAdjuntoDto: CreateCliDocumentoDigitalizadoAdjuntoDto,
-    idPaciente? /* Opcional */,
-    idEpisodio? /* Opcional */,
+    idPaciente?: number /* Opcional */,
+    idEpisodio?: number /* Opcional */,
   ) {
+    if (idPaciente) {
+      const newPaciente = this.pacienteService.findOne(idPaciente);
+      console.log(newPaciente);
+    }
+    if (idEpisodio) {
+      const newEpisodio = this.episodeService.getOneEpisodio(idEpisodio);
+      console.log(newEpisodio);
+    }
     const newObject = await this.cliDocDigiAdjRepository.save(
       createCliDocumentoDigitalizadoAdjuntoDto,
     );
@@ -165,14 +188,15 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     return response;
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async saveToFhir(): Promise<Bundle> {
     //TODO: Agregar funcion para migrar con diferentes paramentros y un la generacion de un archivo de Log de las migraciones ejecutadas.
     const date = dateNow();
-    const dateTo = `${date.year}-${date.day}-${date.month} ${date.hour}:${date.minute}:${date.second}`;
+    const dateTo = `${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}`;
     const yesterday = last24Hours(date);
-    const dateFrom = `${yesterday.year}-${yesterday.day}-${yesterday.month} ${yesterday.hour}:${yesterday.minute}:${yesterday.second}`; //console.log(dateFrom);
-    //console.log(dateTo);
+    const dateFrom = `${yesterday.year}-${yesterday.month}-${yesterday.day} ${yesterday.hour}:${yesterday.minute}:${yesterday.second}`; //console.log(dateFrom);
+    console.log(`FROM: ${dateFrom}`);
+    console.log(`TO: ${dateTo}`);
 
     const dataStream = await this.cliDocDigiAdjRepository.find({
       where: {
@@ -184,15 +208,84 @@ export class CliDocumentoDigitalizadoAdjuntoService {
         'cliDocumentoDigitalizado.cliEpisodio',
       ],
     });
-    //console.log(dataStream);
-    let bundle: any;
+
     dataStream.forEach(async (element) => {
+      if (element.cliDocumentoDigitalizado.cliEpisodio != null) {
+        console.log(`Tiene episodio`);
+        //Obtenemos el Episodio
+        const episodeToBundle = await this.episodeRepository.findOne({
+          where: {
+            id: element.cliDocumentoDigitalizado.cliEpisodio.id,
+          },
+          relations: ['pacientData'],
+        });
+        // Lo transcrbimos al formato de un JSON de entrada
+        const bundledEncounter = await this.episodeService.parseToJSON4Fhir(
+          episodeToBundle,
+        );
+        // Obtenemos al paciente
+        const patientToBundle = await this.pacienteRepository.findOne({
+          where: { id: element.cliDocumentoDigitalizado.cliPaciente.id },
+        });
+
+        //Lo transcribimos al formato de un JSON de entrada
+        const bundledPatient = await this.pacienteService.parseToJSON4Fhir(
+          patientToBundle,
+        );
+        //Creamos el Bundle del document reference
+        await Bundle.createBundle('collection', [
+          bundledEncounter,
+          bundledPatient,
+        ]);
+        this.httpService.post(
+          `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateEncounter}`,
+          Bundle,
+        );
+
+        //Obtenemos el archivo adjunto
+        const bundledFile = await this.parseToJSON4Fhir(element);
+        await Bundle.createBundle('collection', [
+          bundledEncounter,
+          bundledFile,
+        ]);
+        Logger.log(JSON.stringify(Bundle));
+        const encounterInsertion = await this.httpService.axiosRef.post(
+          `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
+          Bundle,
+        );
+        //Logger.log(encounterInsertion.data);
+      } else {
+        if (element.cliDocumentoDigitalizado.cliPaciente != null) {
+          console.log(`No Tiene episodio`);
+
+          // Obtenemos al paciente
+          const patientToBundle = await this.pacienteRepository.findOne({
+            where: { id: element.cliDocumentoDigitalizado.cliPaciente.id },
+          });
+
+          //Lo transcribimos al formato de un JSON de entrada
+          const bundledPatient = await this.pacienteService.parseToJSON4Fhir(
+            patientToBundle,
+          );
+
+          //Obtenemos el archivo adjunto
+          const bundledFile = await this.parseToJSON4Fhir(element);
+          await Bundle.createBundle('collection', [
+            bundledPatient,
+            bundledFile,
+          ]);
+          this.httpService.post(
+            `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
+            Bundle,
+          );
+        }
+      }
+
+      /* 
       console.log(element);
-      const bundledElement = await this.parseToJSON4Fhir(element);
-      //Logger.log(JSON.parse(JSON.stringify(bundledElement)));
+      Logger.log(JSON.parse(JSON.stringify(bundledElement)));
       Logger.log('we are moving all the data =D');
-      bundle = await Bundle.createBundle('collection', [bundledElement]);
-      console.log(bundle);
+       */
     });
 
     /* return this.httpService.post(
