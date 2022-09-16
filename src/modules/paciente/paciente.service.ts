@@ -45,40 +45,55 @@ export class PacienteService {
     return 'Borrado Exitoso';
   }
 
-  async parseToJSON4Fhir(element: paciente): Promise<JSON> {
+  parseToJSON4Fhir(element: paciente) {
+    const apellidos = [];
+    if (element.primerApellido) {
+      apellidos.push(element.primerApellido);
+    }
+    if (element.segundoApellido) {
+      apellidos.push(element.segundoApellido);
+    }
+
+    const nombres = [];
+    if (element.primerNombre) {
+      nombres.push(element.primerNombre);
+    }
+    if (element.segundoNombre) {
+      nombres.push(element.segundoNombre);
+    }
+    //Logger.log(element.fecha_nacimiento.toISOString());
     const parsedFhir = {
-      patient: {
-        resourceType: 'Patient',
-        identificador: {
-          dominio: 'dominio1',
-          id: element.id,
-        },
-        documento: [
-          {
-            tipo: element.tipoDocumento,
-            numero: element.documento,
-          },
-        ],
-        direccion: {
-          calle: element.direccion,
-          codigo_postal: element.codigoPostal,
-          ciudad: element.localidad,
-          provincia: element.provincia,
-          pais: 'Argentina',
-          //element.pais,
-        },
-        apellidos: [element.primerApellido + element.segundoApellido],
-        nombres: [element.primerNombre + element.segundoNombre],
-        telefono: element.telefonoFijo,
-        email: element.email,
-        celular: element.telefonoMovil,
-        sexo: element.sexo,
-        fecha_nacimiento: element.fecha_nacimiento,
-        fed_nacion_id: element.fedNacion,
-        active: element.activeFedNacion,
+      resourceType: 'Patient',
+      identificador: {
+        // Segun el ID de tipo tengo una URL diferente
+        dominio: 'https://cmic.grupocemico.com.ar',
+        id: element.id,
       },
+      documento: [
+        {
+          tipo: element.tipoDocumento,
+          numero: element.documento,
+        },
+      ],
+      direccion: {
+        calle: element.direccion,
+        codigo_postal: element.codigoPostal,
+        ciudad: element.localidad,
+        provincia: element.provincia,
+        pais: 'Argentina',
+        //element.pais,
+      },
+      apellidos,
+      nombres,
+      telefono: element.telefonoFijo,
+      email: element.email,
+      celular: element.telefonoMovil,
+      sexo: element.sexo === 'M' ? 'male' : 'female',
+      fecha_nacimiento: element.fecha_nacimiento.toISOString().split('T')[0],
+      fed_nacion_id: element.fedNacion,
+      active: element.activeFedNacion,
     };
-    return JSON.parse(JSON.stringify(parsedFhir));
+    return parsedFhir;
   }
 }
 /*

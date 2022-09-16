@@ -104,9 +104,6 @@ export class CliDocumentoDigitalizadoAdjunto {
   })
   sha1: string;
 
-  /* @Column({ name: 'fecha', nullable: false, type: 'datetime' })
-  fecha: Date; */
-
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
@@ -116,5 +113,5 @@ export class CliDocumentoDigitalizadoAdjunto {
   @UpdateDateColumn({ name: 'updated_at' })
   updateAt: Date;
 
-  url: any;
+  //url: any;
 }

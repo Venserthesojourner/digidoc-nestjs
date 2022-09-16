@@ -11,16 +11,6 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-export enum estado {
-  PLANNED = 'planned',
-  ARRIVED = 'arrived',
-  TRIAGED = 'triaged',
-  IN_PROGRESS = 'in-progress',
-  ON_LEAVE = 'onleave',
-  FINISHED = 'finished',
-  CANCELLED = 'cancelled',
-}
-
 @Entity('episodios')
 export class episodio {
   @PrimaryColumn({ name: 'idepisodio' })
@@ -44,20 +34,14 @@ export class episodio {
   motivoInternacion: string;
   //Esto es un modelo aparte, D:
 
-  @Column({
-    type: 'enum',
-    enum: estado,
-    enumName: 'estado',
-    default: estado.ARRIVED,
-  })
-  estado: estado;
-
   @Column({ name: 'fecha_ingreso' })
   fechaIngreso: Date;
 
   @Column({ name: 'fecha_egreso' })
   fechaEgreso: Date;
+}
 
+/*
   /*@Column({ name: 'tipo_Servicio', type: 'json' })
  tipoServicio: JSON;
  Formato del tipoServicio {
@@ -68,10 +52,7 @@ export class episodio {
        mostrar: '',
      },
    ],
- } */
-}
-
-/*
+ } 
 Columns:
  CREATE TABLE `episodios` (
   `idepisodio` int NOT NULL,

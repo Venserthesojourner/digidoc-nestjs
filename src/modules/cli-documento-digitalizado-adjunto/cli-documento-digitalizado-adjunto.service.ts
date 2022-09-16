@@ -6,7 +6,6 @@ import { CliDocumentoDigitalizadoAdjunto } from 'src/modules/cli-documento-digit
 import sizeOf from 'image-size';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
-import { Bundle } from 'fhir-resources';
 
 import {
   isImage,
@@ -27,7 +26,7 @@ import {
   dimensionVideo,
   mkdirPromise,
 } from 'src/utils/file/image.file';
-import { Cron, CronExpression } from '@nestjs/schedule';
+//import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { dateNow, last24Hours } from 'src/utils/date.util';
 import { episodio } from '../episodio/entity/episodio.entity';
@@ -57,6 +56,8 @@ interface fileMeta {
   sha1?: string;
   duracion?: number;
 }
+
+import { createBundle } from 'src/utils/fhir';
 
 @Injectable()
 export class CliDocumentoDigitalizadoAdjuntoService {
@@ -188,8 +189,8 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     return response;
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async saveToFhir(): Promise<Bundle> {
+  //@Cron(CronExpression.EVERY_5_MINUTES)
+  async saveToFhir(): Promise<void> {
     //TODO: Agregar funcion para migrar con diferentes paramentros y un la generacion de un archivo de Log de las migraciones ejecutadas.
     const date = dateNow();
     const dateTo = `${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}`;
@@ -209,13 +210,17 @@ export class CliDocumentoDigitalizadoAdjuntoService {
       ],
     });
 
-    dataStream.forEach(async (element) => {
-      if (element.cliDocumentoDigitalizado.cliEpisodio != null) {
-        console.log(`Tiene episodio`);
+    Logger.log('Datastream:::', dataStream);
+
+    const top = dataStream.length;
+
+    for (let i = 0; i < top; i++) {
+      if (dataStream[i].cliDocumentoDigitalizado.cliEpisodio != null) {
+        Logger.log(`Archivo ${i} del datastream: Tiene episodio`);
         //Obtenemos el Episodio
         const episodeToBundle = await this.episodeRepository.findOne({
           where: {
-            id: element.cliDocumentoDigitalizado.cliEpisodio.id,
+            id: dataStream[i].cliDocumentoDigitalizado.cliEpisodio.id,
           },
           relations: ['pacientData'],
         });
@@ -225,42 +230,120 @@ export class CliDocumentoDigitalizadoAdjuntoService {
         );
         // Obtenemos al paciente
         const patientToBundle = await this.pacienteRepository.findOne({
-          where: { id: element.cliDocumentoDigitalizado.cliPaciente.id },
+          where: { id: dataStream[i].cliDocumentoDigitalizado.cliPaciente.id },
         });
 
         //Lo transcribimos al formato de un JSON de entrada
         const bundledPatient = await this.pacienteService.parseToJSON4Fhir(
           patientToBundle,
         );
-        //Creamos el Bundle del document reference
-        await Bundle.createBundle('collection', [
-          bundledEncounter,
+
+        // Agregamos el bundle ya en FHIR de la organization
+        const bundledOrganization = {
+          resourceType: 'Organization',
+          identifier: [
+            {
+              system: 'https://cmic.grupocemico.com.ar',
+              value: '1',
+            },
+            {
+              system: 'https://federador.grupocemico.com.ar/dominio',
+              value: '1',
+            },
+          ],
+          active: true,
+          name: 'CMIC',
+          address: [
+            {
+              text: 'Santiago del Estero  280, (8300), Neuquen, Neuquén, Argentina',
+              line: ['Santiago del Estero  280'],
+              postalCode: '8300',
+              city: 'Neuquen',
+              state: 'Neuquén',
+              country: 'Argentina',
+            },
+          ],
+          telecom: [
+            {
+              system: 'phone',
+              value: '(299) 430 3558',
+            },
+            {
+              system: 'email',
+              value: 'recepcion@cmic.com.ar',
+            },
+          ],
+          type: [
+            {
+              coding: [
+                {
+                  system:
+                    'http://terminology.hl7.org/CodeSystem/organization-type',
+                  code: 'prov',
+                  display: 'Healthcare Provider',
+                },
+              ],
+            },
+          ],
+        };
+
+        //Creamos el Bundle del Encounter
+        const bundledFhirByEncounter = await createBundle([
           bundledPatient,
+          bundledEncounter,
         ]);
-        this.httpService.post(
+
+        Logger.log(
+          `BundledPatient with Encounter Archivo ${i}`,
+          bundledFhirByEncounter,
+        );
+        // Se agrega el FHIR de organization
+        bundledFhirByEncounter.entry.push({ resource: bundledOrganization });
+
+        Logger.log(`Bundled Organization of ${i}`, bundledFhirByEncounter);
+        // Se postea en la base de datos de MongoDB
+        const encounterInsertion = await this.httpService.axiosRef.post(
           `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateEncounter}`,
-          Bundle,
+          { Bundle: bundledFhirByEncounter },
+        );
+        Logger.log(
+          `Resultado de la primer insercion Archivo ${i}: `,
+          encounterInsertion.data,
         );
 
+        // Logger.log('bundledFhirEncounter', bundledFhirByEncounter);
+
         //Obtenemos el archivo adjunto
-        const bundledFile = await this.parseToJSON4Fhir(element);
-        await Bundle.createBundle('collection', [
-          bundledEncounter,
-          bundledFile,
-        ]);
-        Logger.log(JSON.stringify(Bundle));
-        const encounterInsertion = await this.httpService.axiosRef.post(
+        const bundledFile = await this.parseToJSON4Fhir(dataStream[i]);
+
+        Logger.log(`bundledFile: Archivo ${i}`, bundledFile);
+
+        const bundledFhirByDocument = await createBundle([bundledFile]);
+
+        // Logger.log('bundledFhir with FILE', bundledFhirByDocument);
+
+        bundledFhirByDocument.entry.push({ resource: bundledEncounter });
+
+        Logger.log('bundledFhir with ENCOUNTER', bundledFhirByDocument);
+
+        const documentInsertion = await this.httpService.axiosRef.post(
           `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
-          Bundle,
+          { Bundle: bundledFhirByDocument },
         );
-        //Logger.log(encounterInsertion.data);
+
+        Logger.log(
+          `Insercion del documento ${i}, ACA SALE DEL IF`,
+          documentInsertion.data,
+        );
       } else {
-        if (element.cliDocumentoDigitalizado.cliPaciente != null) {
-          console.log(`No Tiene episodio`);
+        if (dataStream[i].cliDocumentoDigitalizado.cliPaciente != null) {
+          Logger.log(`Archivo ${i} del datastream: NO Tiene episodio`);
 
           // Obtenemos al paciente
           const patientToBundle = await this.pacienteRepository.findOne({
-            where: { id: element.cliDocumentoDigitalizado.cliPaciente.id },
+            where: {
+              id: dataStream[i].cliDocumentoDigitalizado.cliPaciente.id,
+            },
           });
 
           //Lo transcribimos al formato de un JSON de entrada
@@ -268,41 +351,34 @@ export class CliDocumentoDigitalizadoAdjuntoService {
             patientToBundle,
           );
 
-          //Obtenemos el archivo adjunto
-          const bundledFile = await this.parseToJSON4Fhir(element);
-          await Bundle.createBundle('collection', [
-            bundledPatient,
-            bundledFile,
-          ]);
-          this.httpService.post(
+          Logger.log(`Bundled Patient Archivo ${i}`, bundledPatient);
+          const bundledFile = await this.parseToJSON4Fhir(dataStream[i]);
+          Logger.log(`Bundled File Archivo ${i}`, bundledFile);
+          const bundledFhir = await createBundle([bundledPatient, bundledFile]);
+          Logger.log(`Bundled FHIR (patient+file) Archivo ${i}`, bundledFhir);
+
+          const DocumentResponse = await this.httpService.axiosRef.post(
             `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
-            Bundle,
+            { Bundle: bundledFhir },
           );
+
+          Logger.log(`response Archivo ${i}: `, DocumentResponse.data);
         }
       }
+    }
 
-      /* 
-      console.log(element);
-      Logger.log(JSON.parse(JSON.stringify(bundledElement)));
-      Logger.log('we are moving all the data =D');
-       */
-    });
-
-    /* return this.httpService.post(
-      '/api/v1/fhir/resource/DocumentReference/create_document_reference',
-      Bundle,
-    ); */
+    // ACA TERMINA EL FOR
   }
 
   async parseToJSON4Fhir(
     element: CliDocumentoDigitalizadoAdjunto,
   ): Promise<any> {
-    const tipo = [
-      {
-        // 0..1
-        url: 'http://snomed.info/sct',
+    /*const tipo = [
+    {
+      // 0..1
+      url: 'http://snomed.info/sct',
         codigo: '772786005',
-        mostrar: 'certificado médico (elemento de registro)',
+          mostrar: 'certificado médico (elemento de registro)',
       },
     ];
     /*  FORMATO DE CATEGORIAS:
@@ -317,42 +393,62 @@ export class CliDocumentoDigitalizadoAdjuntoService {
               },
             ],
           },*/
-    const categorias = element.cliDocumentoDigitalizado.categoria;
+    //const categorias = element.cliDocumentoDigitalizado.categoria;
     //TAGS: Llegan como una cadena de texto, que separamos en partes
-    const tags: string[] = element.cliDocumentoDigitalizado.tags.split(',');
+    const tagsArray = (element) => {
+      const splitName = element.cliDocumentoDigitalizado.tags.split(',');
+      const data = [];
+      for (const i in splitName) {
+        data[i] = { tag: splitName[i] };
+      }
+      return data;
+    };
     const content: any[] = [
       // R! 1..*
       {
         attachment: {
           contentType: element.contentType,
           language: 'es-AR',
-          url: element.url,
+          url: 'element.url',
           size: element.bytes,
           creation: element.createdAt /*Arreglar bien aca*/,
-          data: element.sha1,
+          data: element.filename,
         },
       },
     ];
     const parsedFhir = {
-      documentReference: {
-        resourceType: 'DocumentReference',
-        identificador: [
+      resourceType: 'DocumentReference',
+      identificador: [
+        {
+          id: element.id,
+        },
+      ],
+      estado: element.estado, // !R 1..1 current | superseded | entered-in-error
+      tipo: {
+        codigos: [
           {
-            id: element.id,
+            // 0..1
+            url: 'http://snomed.info/sct',
+            codigo: '772786005',
+            mostrar: 'certificado médico (elemento de registro)',
           },
         ],
-        estado: element.estado, // !R 1..1 current | superseded | entered-in-error
-        tipo: {
-          codigos: { tipo },
-        },
-        categorias: [categorias],
-        fecha: element.cliDocumentoDigitalizado.fecha, // 0..1
-        descripcion: element.cliDocumentoDigitalizado.descripcion,
-        meta: tags,
-        content: content,
       },
+      categorias: {
+        codigos: [
+          {
+            url: 'http://snomed.info/sct',
+            codigo: '371529009',
+            mostrar:
+              'informe de historia y examen físico (elemento de registro)',
+          },
+        ],
+      },
+      fecha: element.cliDocumentoDigitalizado.fecha, // 0..1
+      descripcion: element.cliDocumentoDigitalizado.descripcion,
+      meta: tagsArray(element),
+      content: content,
     };
     return parsedFhir;
-    //JSON.parse(JSON.stringify());
   }
 }

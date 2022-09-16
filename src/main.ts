@@ -17,15 +17,6 @@ async function bootstrap() {
     new FastifyAdapter({ logger: false }),
   );
 
-  const configRedis = new DocumentBuilder()
-    .setTitle('La Aplicacioncita del Amour')
-    .setDescription('Lo que se supone implemente para el laburo')
-    .setVersion('1.0')
-    .addTag('Weeey')
-    .build();
-  const documentRedis = SwaggerModule.createDocument(app, configRedis);
-  SwaggerModule.setup('api', app, documentRedis);
-
   app.register(helmet, {
     contentSecurityPolicy: {
       directives: {

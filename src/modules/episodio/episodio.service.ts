@@ -53,22 +53,21 @@ export class episodioService {
     await this.episodioRepo.delete({ id });
   }
 
-  async parseToJSON4Fhir(element: episodio): Promise<JSON> {
+  parseToJSON4Fhir(element: episodio) {
     const parsedFhir = {
-      episodio: {
-        resourceType: 'Encounter',
-        identificador: [
-          {
-            dominio: 'https://fhir.grupocemico.com.ar/resource/Encounter/',
-            id: element.id,
-          },
-        ],
-        estado: element.estado,
-        clase: {
-          url: 'https://www.hl7.org/fhir/v3/ActEncounterCode/vs.html',
-          codigo: 'AMB',
+      resourceType: 'Encounter',
+      identificador: [
+        {
+          dominio: 'https://fhir.grupocemico.com.ar/resource/Encounter/',
+          id: element.id,
         },
+      ],
+      estado: 'in-progress', //TODO: revisar si fecha_egreso, hora_alta, tipo_alta => finished otherwise in-progress.
+      clase: {
+        url: 'https://www.hl7.org/fhir/v3/ActEncounterCode/vs.html',
+        codigo: 'AMB',
       },
+
       tipos: [
         {
           codigos: [
@@ -96,7 +95,7 @@ export class episodioService {
         fin: element.fechaEgreso,
       },
     };
-    return JSON.parse(JSON.stringify(parsedFhir));
+    return parsedFhir;
   }
 }
 /* 

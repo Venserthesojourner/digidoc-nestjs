@@ -53,7 +53,9 @@ export class CliDocumentoDigitalizado {
   @JoinColumn({ name: 'cli_paciente_id' })
   cliPaciente?: paciente;
 
-  @ManyToOne(() => episodio, (episodio) => episodio.id)
+  @ManyToOne(() => episodio, (episodio) => episodio.id, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'cli_episodio_id' })
   cliEpisodio?: episodio;
 
