@@ -58,7 +58,6 @@ interface fileMeta {
 }
 
 import { createBundle } from 'src/utils/fhir';
-import { IsBase64 } from 'class-validator';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
@@ -240,11 +239,15 @@ export class CliDocumentoDigitalizadoAdjuntoService {
       ],
     };
     //TODO: Agregar funcion para migrar con diferentes paramentros y un la generacion de un archivo de Log de las migraciones ejecutadas.
-    const [dataStream, dataStreamLength] = await this.createDatastream();    
+    const [dataStream, dataStreamLength] = await this.createDatastream();
 
     for (let i = 0; i < dataStreamLength; i++) {
       if (dataStream[i].cliDocumentoDigitalizado.cliEpisodio != null) {
-        await this.manageFhirDocumentReferenceWithEncounter({ i, dataStream, bundledOrganization });
+        await this.manageFhirDocumentReferenceWithEncounter({
+          i,
+          dataStream,
+          bundledOrganization,
+        });
       } else {
         if (dataStream[i].cliDocumentoDigitalizado.cliPaciente != null) {
           await this.manageDocumentReferenceWithPatient(i, dataStream);
@@ -265,36 +268,51 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     });
 
     //Lo transcribimos al formato de un JSON de entrada
-    const bundledPatient = this.pacienteService.parseToJSON4Fhir(
-      patientToBundle
-    );
+    const bundledPatient =
+      this.pacienteService.parseToJSON4Fhir(patientToBundle);
     Logger.log(`Bundled Patient Archivo ${i}`, bundledPatient);
 
-    
-    const bundledFile = this.parseToJSON4Fhir(dataStream[i]);
+    const bundledFile = await this.parseToJSON4Fhir(dataStream[i]);
     Logger.log(`Bundled File Archivo ${i}`, bundledFile);
+
     const bundledFhir = await createBundle([bundledPatient, bundledFile]);
     Logger.log(`Bundled FHIR (patient+file) Archivo ${i}`, bundledFhir);
-    try{
-      const DocumentResponse = await this.httpService.axiosRef.post(
+
+    try {
+      const documentInsertion = await this.httpService.axiosRef.post(
         `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
-        { Bundle: bundledFhir }
+        { Bundle: bundledFhir },
       );
-      Logger.log(`response Archivo ${i}: `, DocumentResponse.data);
-    } catch (e){
-      // Aca genero un log del error pero mantengo la ejecucion con los siguientes 
-    }    
+      Logger.log(`response Archivo ${i}: `, documentInsertion.data);
+    } catch (e) {
+      // Aca genero un log del error pero mantengo la ejecucion con los siguientes
+    }
   }
 
-  private async manageFhirDocumentReferenceWithEncounter(
-    { i, dataStream, bundledOrganization }: 
-    { i: number; dataStream: any; bundledOrganization: 
-      { resourceType: string; identifier: { system: string; value: string; }[]; 
-      active: boolean; name: string; address: { text: string; line: string[]; 
-        postalCode: string; city: string; state: string; country: string; }[]; 
-        telecom: { system: string; value: string; }[]; 
-        type: { coding: { system: string; code: string; display: string; }[]; }[]; }; })
-        : Promise<void> {
+  private async manageFhirDocumentReferenceWithEncounter({
+    i,
+    dataStream,
+    bundledOrganization,
+  }: {
+    i: number;
+    dataStream: any;
+    bundledOrganization: {
+      resourceType: string;
+      identifier: { system: string; value: string }[];
+      active: boolean;
+      name: string;
+      address: {
+        text: string;
+        line: string[];
+        postalCode: string;
+        city: string;
+        state: string;
+        country: string;
+      }[];
+      telecom: { system: string; value: string }[];
+      type: { coding: { system: string; code: string; display: string }[] }[];
+    };
+  }): Promise<void> {
     Logger.log(`Archivo ${i} del datastream: Tiene episodio`);
     //Obtenemos el Episodio
     const episodeToBundle = await this.episodeRepository.findOne({
@@ -304,18 +322,16 @@ export class CliDocumentoDigitalizadoAdjuntoService {
       relations: ['pacientData'],
     });
     // Lo transcrbimos al formato de un JSON de entrada
-    const bundledEncounter = this.episodeService.parseToJSON4Fhir(
-      episodeToBundle
-    );
+    const bundledEncounter =
+      this.episodeService.parseToJSON4Fhir(episodeToBundle);
     // Obtenemos al paciente
     const patientToBundle = await this.pacienteRepository.findOne({
       where: { id: dataStream[i].cliDocumentoDigitalizado.cliPaciente.id },
     });
 
     //Lo transcribimos al formato de un JSON de entrada
-    const bundledPatient = this.pacienteService.parseToJSON4Fhir(
-      patientToBundle
-    );
+    const bundledPatient =
+      this.pacienteService.parseToJSON4Fhir(patientToBundle);
 
     //Creamos el Bundle del Encounter
     const bundledFhirByEncounter = await createBundle([
@@ -325,7 +341,7 @@ export class CliDocumentoDigitalizadoAdjuntoService {
 
     Logger.log(
       `BundledPatient with Encounter Archivo ${i}`,
-      bundledFhirByEncounter
+      bundledFhirByEncounter,
     );
     // Se agrega el FHIR de organization
     bundledFhirByEncounter.entry.push({ resource: bundledOrganization });
@@ -334,11 +350,11 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     // Se postea en la base de datos de MongoDB
     const encounterInsertion = await this.httpService.axiosRef.post(
       `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateEncounter}`,
-      { Bundle: bundledFhirByEncounter }
+      { Bundle: bundledFhirByEncounter },
     );
     Logger.log(
       `Resultado de la primer insercion Archivo ${i}: `,
-      encounterInsertion.data
+      encounterInsertion.data,
     );
 
     // Logger.log('bundledFhirEncounter', bundledFhirByEncounter);
@@ -350,19 +366,25 @@ export class CliDocumentoDigitalizadoAdjuntoService {
     const bundledFhirByDocument = await createBundle([bundledFile]);
 
     // Logger.log('bundledFhir with FILE', bundledFhirByDocument);
-    bundledFhirByDocument.entry.push({ resource: bundledEncounter });
+    bundledFhirByDocument.entry.push({
+      resource: encounterInsertion.data.encounter.object,
+    });
 
     Logger.log('bundledFhir with ENCOUNTER', bundledFhirByDocument);
 
-    const documentInsertion = await this.httpService.axiosRef.post(
-      `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
-      { Bundle: bundledFhirByDocument }
-    );
+    try {
+      const documentInsertion = await this.httpService.axiosRef.post(
+        `${this.configEnd.fsBaseFhirServer}${this.configEnd.fsPostCreateDocumentReference}`,
+        { Bundle: bundledFhirByDocument },
+      );
 
-    Logger.log(
-      `Insercion del documento ${i}, ACA SALE DEL IF`,
-      documentInsertion.data
-    );
+      Logger.log(
+        `Insercion del documento ${i}, ACA SALE DEL IF`,
+        documentInsertion.data,
+      );
+    } catch (err) {
+      //
+    }
   }
 
   private async createDatastream(): Promise<any[]> {
@@ -400,23 +422,25 @@ export class CliDocumentoDigitalizadoAdjuntoService {
       return data;
     };
 
+    const imageurl = `${this.configEnd.dirupload}${element.filename}`;
+    //const base64encodedurl = Buffer.from(imageurl).toString('base64');
     const content: any[] = [
       // Toda la info obtenidad del archivo que sera cargado
       // R! 1..*
-      { 
+      {
         attachment: {
           contentType: element.contentType,
           language: 'es-AR',
-          url: `${this.configEnd.dirupload}${element.filename}`,
+          url: imageurl,
           size: element.bytes,
           creation: element.createdAt /*Arreglar bien aca*/,
-          data:"iVBORw0KGgoAAAANSUhEUgAAAI8AAAALCAMAAABxnC5vAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAzFBMVEUAAAAqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlcqKlf////nlZzuAAAAQnRSTlMAVKz8BKSosM5odiIBRNDLZkdYUFy0TMxkQcpi/UBGuWG1HO2VEyOgi+AYs7v36MRKCJjdejNIwzTAanMhfUICyWxA/F9gAAAAAWJLR0RDZ9ANYgAAAAlvRkZzAAAAAwAAAA0A6RC6LQAAAAl2cEFnAAAAogAAABoA8Sv3NwAAAW1JREFUOMu9lIlSwjAQhtcKtBGQepWKKFIVteKBR70F9/0fys3ZNNROR2fYmc6fZDfs1yY/gDzWwASiB6XhIUKd8HC9IttAbNLTAvCpzl+uRQwYbrRXydNhrNthm70Qtli4zOOB4F0dj9JWaYHmyZX33ca8Xo0ND59TTz4Xvd1ae02pT7IDUuV5NUSdOK9dFIx7JFEZTz/mveK+ek891jz23JNaVms03qfeg1ByaOU8gwN1h4ZxfAhwFDMcHVP/cYInpwWu/N1lj2Rc5NEcWkXeyVl7VP+mo86dPksmiOeg/VXFY86Hx8UlpldFHnlGRR5rTy2edHp9I3luoyit5omi6O7X+6PzDo+1pw7PjNZnkkf66f6BfE81LAgYtB+RBaMnkeBjRr40PGmWPdNvhFOqIdV5XWuvCe3Cy2vvDd8/pLo8k88hY1/zbLH4tnnkN9Y+KvGM7XfjK1tdf1k+K/WX4rH9RTx/iur/mP/ED1rWetWuoP74AAAAAElFTkSuQmCC",
+          data: 'data:application/pdf;base64,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CjkgMCBvYmoKPDwvVHlwZS9DYXRhbG9nL1BhZ2VzIDcgMCBSL1ZpZXdlclByZWZlcmVuY2VzPDwvTnVtQ29waWVzIDEvRHVwbGV4L1NpbXBsZXg+Pj4+CmVuZG9iagoxMCAwIG9iago8PC9Nb2REYXRlKEQ6MjAyMTA3MDcwNzUwMDktMDMnMDAnKS9DcmVhdG9yKEdlbmVYdXMgUERGIFJlcG9ydCBHZW5lcmF0b3IpL0NyZWF0aW9uRGF0ZShEOjIwMjEwNzA3MDc1MDA5LTAzJzAwJykvUHJvZHVjZXIoaVRleHQgMi4xLjcgYnkgMVQzWFQpL0F1dGhvcihHZW5lWHVzKT4+CmVuZG9iagp4cmVmCjAgMTEKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAyNDU3IDAwMDAwIG4gCjAwMDAwMDI1NTAgMDAwMDAgbiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMjIwIDAwMDAwIG4gCjAwMDAwMDA0MjUgMDAwMDAgbiAKMDAwMDAwMDYzMCAwMDAwMCBuIAowMDAwMDAyNjM4IDAwMDAwIG4gCjAwMDAwMDIyNDAgMDAwMDAgbiAKMDAwMDAwMjcwMSAwMDAwMCBuIAowMDAwMDAyNzk1IDAwMDAwIG4gCnRyYWlsZXIKPDwvSW5mbyAxMCAwIFIvSUQgWzw0Zjc2OGQxZDIwOGM4M2UyMDZkNzVkNjJjNjQ5NDc2Zj48MGI4NjgzYmQ2YmU3MmRmOTk0MDE3MzU0Nzc4MmU2ZDE+XS9Sb290IDkgMCBSL1NpemUgMTE+PgpzdGFydHhyZWYKMjk3MgolJUVPRgo=',
         },
       },
     ];
 
     //El resultado devuelto es el JSON de entrada requerido para la libreria que genera el bundle
-    
+
     const parsedFhir = {
       resourceType: 'DocumentReference',
       identificador: [

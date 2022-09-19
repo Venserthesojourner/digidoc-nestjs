@@ -67,7 +67,6 @@ export class episodioService {
         url: 'https://www.hl7.org/fhir/v3/ActEncounterCode/vs.html',
         codigo: 'AMB',
       },
-
       tipos: [
         {
           codigos: [
@@ -89,7 +88,17 @@ export class episodioService {
           },
         ],
       },
-      motivosInternacion: [element.motivoInternacion],
+      motivosInternacion: [
+        {
+          codigos: [
+            {
+              url: 'http://snomed.info/sct',
+              codigo: '258343008',
+              mostrar: 'Heart valve replacement',
+            },
+          ],
+        },
+      ],
       periodo: {
         inicio: element.fechaIngreso,
         fin: element.fechaEgreso,
@@ -98,63 +107,3 @@ export class episodioService {
     return parsedFhir;
   }
 }
-/* 
-{
-  "episodio": {
-    "resourceType" : "Encounter",
-    "identificador": [
-      {
-        "dominio": "https://fhir.grupocemico.com.ar/resource/Encounter/",
-        "id": "12345"
-      }
-    ],
-    "estado": "planned | arrived | triaged | in-progress | onleave | finished | cancelled",
-    "clase": {
-      "url": "https://www.hl7.org/fhir/v3/ActEncounterCode/vs.html",
-      "codigo": "AMB"
-    },
-    "tipos": [
-      {
-        "codigos": [
-          {
-            "url": "http://sin/url",
-            "codigo": "309386006",
-            "mostrar": "Traumatologo"
-          }
-        ]
-      }
-    ],
-    "tipoServicio": {
-      "codigos": [
-        {
-          "url": "https://www.hl7.org/fhir/valueset-service-type.html",
-          "codigo": "60",
-          "mostrar": ""
-        }
-      ]
-    },
-    "prioridad": {
-      "codigos": [
-        {
-          "url": "http://sin/url",
-          "codigo": "A",
-          "mostrar": "Traumatologo"
-        }
-      ]
-    },
-    "motivosInternacion": [{
-      "codigos": [
-        {
-          "url": "http://snomed.info/sct",
-          "codigo": "258343008",
-          "mostrar": "Heart valve replacement"
-        }
-      ]
-    }],
-    "periodo": {
-      "inicio": "2020-01-01T12:34:56-03:00",
-      "fin": "2020-01-04T10:30:00-03:00"
-    }
-  }
-}
-*/
