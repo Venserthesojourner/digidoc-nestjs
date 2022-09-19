@@ -6,3 +6,6 @@ ERROR [ExceptionsHandler] Field 'idobra_social' doesn't have a default value
 
 Episodio: POST
 La tabla episodio no tiene el campo id como autoincremental.
+
+
+"fhir-resources": "git+http://fhuenuman:ElFabiaN771@192.168.0.22/proyectos-soporte/fhir-resources.git",

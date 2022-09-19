@@ -3,6 +3,7 @@ import { registerAs } from '@nestjs/config';
 export default registerAs('configEndpoint', () => {
   return {
     apiKey: process.env.API_KEY,
+    dirupload: process.env.DIRUPLOAD,
     fsBaseFhirServer: process.env.FS_BASE_FHIR_SERVER,
     fsGetDocumentReference: process.env.FS_GET_DOCUMENT_REFERENCE,
     fsGetEncounter: process.env.FS_GET_ENCOUNTER,
